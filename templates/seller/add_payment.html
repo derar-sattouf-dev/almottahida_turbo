@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-4">
+            <div class="card">
+                <div class="card-header">
+                    Add Payment From Seller
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'seller.add_payment' seller.pk %}">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <button type="submit" class="btn btn-success">Add Payment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">History</div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Total</th>
+                                <th>Remaining</th>
+                                <th>Currency</th>
+                                <th>Date</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for invoice in invoices %}
+                                <tr>
+                                    <td>Invoice</td>
+                                    <td>{{ invoice.total }}</td>
+                                    <td>{{ invoice.dept }}</td>
+                                    <td>{{ invoice.currency.name }}</td>
+                                    <td>{{ invoice.date_published|date }}</td>
+                                </tr>
+                            {% endfor %}
+                            {% for payment in payments %}
+                                <tr>
+                                    <td>Payment</td>
+                                    <td>{{ payment.amount }}</td>
+                                    <td>__</td>
+                                    <td>{{ payment.currency.name }}</td>
+                                    <td>{{ payment.add_date|date }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <style>
+    #div_id_seller{
+        display: none;
+    }
+    </style>
+{% endblock %}

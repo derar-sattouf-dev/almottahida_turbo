@@ -1,0 +1,529 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <style>
+        .s-r {
+            cursor: pointer;
+        }
+
+        .s-r:hover {
+            background: #ccc;
+        }
+    </style>
+    <div id="app">
+        <h2 class="mb-4">Add new invoice</h2>
+        <v-app>
+            <div>
+                <v-data-table
+                        :headers="headers"
+                        :items="activeProducts"
+                        class="elevation-2"
+                >
+                    <template v-slot:top>
+                        <v-toolbar
+                                flat
+                        >
+                            <v-toolbar-title>New Invoice</v-toolbar-title>
+                            <v-divider
+                                    class="mx-4"
+                                    inset
+                                    vertical
+                            ></v-divider>
+                            <v-spacer></v-spacer>
+                            <v-dialog
+                                    v-model="addDialog"
+                                    max-width="500px"
+                            >
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                            color="primary"
+                                            dark
+                                            class="mb-2"
+                                            v-bind="attrs"
+                                            v-on="on"
+                                    >
+                                        New Product
+                                    </v-btn>
+                                </template>
+
+                                <v-card>
+                                    <v-card-title>
+                                        <span class="text-h5">Search Products</span>
+                                    </v-card-title>
+
+                                    <v-card-text>
+                                        <v-autocomplete
+                                                solo
+                                                label="Search Product"
+                                                :search-input.sync="search"
+                                                :items="results"
+                                                item-value="fields"
+                                                item-text="fields.name"
+                                                v-model="lastKnownProduct"
+                                        >
+                                        </v-autocomplete>
+
+
+                                    </v-card-text>
+
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn
+                                                color="blue darken-1"
+                                                text
+                                                @click="addDialog=false"
+                                        >
+                                            Cancel
+                                        </v-btn>
+                                        <v-btn
+                                                color="blue darken-1"
+                                                text
+                                        >
+                                            Save
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                        </v-toolbar>
+                    </template>
+                    <template v-slot:item.quantity="props">
+                        <v-edit-dialog
+                                :return-value.sync="props.item.quantity"
+                                @save="save(props.item,props.item.quantity)"
+                        >
+                            [[props.item.quantity]]
+                            <template v-slot:input>
+                                <v-text-field
+                                        v-model="props.item.quantity"
+                                        label="Edit"
+                                        single-line
+                                ></v-text-field>
+                            </template>
+                        </v-edit-dialog>
+                    </template>
+                    <template v-slot:item.price="props">
+                        <v-edit-dialog
+                                :return-value.sync="props.item.price"
+                                @save="save2(props.item,props.item.price)"
+                        >
+                            [[props.item.price]]
+                            <template v-slot:input>
+                                <v-text-field
+                                        v-model="props.item.price"
+                                        label="Edit"
+                                        single-line
+                                ></v-text-field>
+                            </template>
+                        </v-edit-dialog>
+                    </template>
+                </v-data-table>
+
+
+                <template>
+                    <v-row justify="center">
+                        <v-dialog
+                                v-model="dialog"
+                                transition="dialog-bottom-transition"
+                        >
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                        color="red"
+                                        dark
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        x-large
+                                >
+                                    Save Invoice
+                                    <v-icon
+                                            right
+                                            dark
+                                    >
+                                        mdi-cloud-upload
+                                    </v-icon>
+                                </v-btn>
+                            </template>
+                            <v-card>
+                                <v-toolbar
+                                        dark
+                                        color="primary"
+                                >
+                                    <v-btn
+                                            icon
+                                            dark
+                                            @click="dialog = false"
+                                    >
+                                        <v-icon>mdi-close</v-icon>
+                                    </v-btn>
+                                    <v-toolbar-title>Confirm Adding Invoice</v-toolbar-title>
+                                    <v-spacer></v-spacer>
+                                    <v-toolbar-items>
+                                        <v-btn
+                                                dark
+
+                                                text
+                                                @click="addInvoice"
+                                        >
+                                            Confirm & Save
+                                        </v-btn>
+                                    </v-toolbar-items>
+                                </v-toolbar>
+                                <v-container fluid>
+                                    <v-row class="mt-5 align-center">
+                                        <v-col cols="3">
+                                            <v-combobox
+                                                    v-model="activeCurrency"
+                                                    :items="currencies"
+                                                    label="Currency"
+                                                    item-text="fields.name"
+                                                    outlined
+                                            ></v-combobox>
+                                        </v-col>
+                                        <v-col cols="3">
+                                            <v-combobox
+                                                    v-model="activeSeller"
+                                                    :items="sellers"
+                                                    outlined
+                                                    label="Seller"
+                                                    item-text="fields.name"
+                                            ></v-combobox>
+                                        </v-col>
+                                        <v-col cols="3">
+                                            <v-combobox
+                                                    v-model="activeWorker"
+                                                    :items="workers"
+                                                    outlined
+                                                    label="Worker"
+                                                    item-text="fields.name"
+                                            ></v-combobox>
+                                        </v-col>
+                                        <v-col cols="3">
+                                            <v-menu
+
+                                                    :close-on-content-click="true"
+                                                    transition="scale-transition"
+                                                    offset-y
+                                                    max-width="290px"
+                                                    min-width="auto"
+                                            >
+                                                <template v-slot:activator="{ on, attrs }">
+                                                    <v-text-field
+                                                            v-model="paydate"
+                                                            label="Pay Date"
+                                                            outlined
+                                                            persistent-hint
+                                                            v-bind="attrs"
+                                                            v-on="on"
+                                                    ></v-text-field>
+                                                </template>
+                                                <v-date-picker
+                                                        v-model="paydate"
+                                                        no-title
+                                                        @input="menu1 = false"
+                                                ></v-date-picker>
+                                            </v-menu>
+                                        </v-col>
+                                        <v-col cols="3">
+                                            <v-text-field
+                                                    v-model="discount"
+                                                    type="number"
+                                                    label="Discount amount"
+                                                    outlined
+                                                    :suffix="activeCurrency.fields?.name"
+                                            >
+                                            </v-text-field>
+                                        </v-col>
+
+                                        <v-col cols="3">
+                                            <v-text-field
+                                                    v-model="payed"
+                                                    type="number"
+                                                    label="Client Payed"
+                                                    outlined
+                                                    :suffix="activeCurrency.fields?.name"
+                                            >
+                                            </v-text-field>
+                                        </v-col>
+
+                                        <v-col cols="3">
+                                            <v-text-field
+                                                    v-model="dept"
+                                                    type="number"
+                                                    label="Remaining Dept"
+                                                    outlined
+                                                    disabled
+                                                    :suffix="activeCurrency.fields?.name"
+                                            >
+                                            </v-text-field>
+                                        </v-col>
+                                        <v-col cols="3">
+                                            <v-text-field
+                                                    type="number"
+                                                    label="Amount To Be Taken From Client"
+                                                    outlined
+                                                    disabled
+                                                    v-model="total"
+                                                    :suffix="activeCurrency.fields?.name"
+
+                                            >
+                                            </v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                </v-container>
+                            </v-card>
+                        </v-dialog>
+                    </v-row>
+                </template>
+
+                <v-snackbar
+                        v-model="snack"
+                        :timeout="3000"
+                        :color="snackColor"
+                >
+                    [[snackText]]
+
+                    <template v-slot:action="{ attrs }">
+                        <v-btn
+                                v-bind="attrs"
+                                text
+                                @click="snack = false"
+                        >
+                            Close
+                        </v-btn>
+                    </template>
+                </v-snackbar>
+            </div>
+        </v-app>
+    </div>
+
+    <script>
+        var app = new Vue({
+            delimiters: ["[[", "]]"],
+            watch: {
+                search: function () {
+                    this.searchProducts()
+                },
+                lastKnownProduct: function (old) {
+                    this.addProduct(old)
+                    this.addDialog = false
+                },
+                activeProducts: function (old) {
+                    this.calc()
+                },
+                discount: function (old) {
+                    this.calc()
+                },
+                activeCurrency: function (old) {
+                    this.calc()
+                },
+                payed: function (old) {
+                    this.calc()
+                },
+            },
+            el: '#app',
+            vuetify: new Vuetify(),
+            data: {
+                finalData: {},
+                total: 0,
+                discount: 0,
+                dept: 0,
+                payed: 0,
+                currencies: [],
+                activeCurrency: "",
+                sellers: [],
+                workers: [],
+                activeSeller: "",
+                activeWorker: "",
+                paydate: new Date().toISOString().split("T")[0],
+                menu1: false,
+                dialog: true,
+                addDialog: false,
+                lastKnownProduct: "",
+                snack: false,
+                snackColor: '',
+                snackText: '',
+                search: "",
+                results: [
+                    {
+                        fields: {name: "derar"}
+                    }
+                ],
+                activeProducts: [],
+                headers: [
+                    {
+                        text: 'Product name',
+                        sortable: false,
+                        value: 'name',
+                    },
+                    {
+                        text: 'Quantity Type',
+                        sortable: true,
+                        value: 'quantity_type.name',
+                    },
+                    {
+                        text: 'Quantity',
+                        sortable: true,
+                        value: 'quantity',
+                    },
+
+                    {
+                        text: 'One Price Price',
+                        sortable: true,
+                        value: 'price',
+                    },
+                    {
+                        text: 'Total',
+                        sortable: true,
+                        value: 'total',
+                    },
+
+                ],
+            },
+            mounted() {
+                this.prepare();
+            },
+            methods: {
+                calc() {
+                    if (this.activeProducts.length > 0) {
+                        var t = this.activeProducts.reduce((a, b) => +a + +(b.price * b.quantity * b.quantity_type.value), 0);
+                        t = t * this.activeCurrency.fields.rate || 0
+                        t -= this.discount
+                        this.total = t
+                        this.dept = this.total - this.payed
+                    }
+                },
+                prepare() {
+                    axios({
+                        method: "get",
+                        url: "{% url 'product.get_currencies' %}",
+                        headers: {"X-CSRFToken": '{{csrf_token}}'}
+                    }).then((r) => {
+                        var r = JSON.parse(r.data.result)
+                        for (let i = 0; i < r.length; i++) {
+                            r[i]["fields"]["pk"] = r[i]["pk"]
+                        }
+                        this.currencies = r
+                        this.activeCurrency = r[0]
+                    })
+                    axios({
+                        method: "get",
+                        url: "{% url 'product.get_sellers' %}",
+                        headers: {"X-CSRFToken": '{{csrf_token}}'}
+                    }).then((r) => {
+                        var r = JSON.parse(r.data.result)
+                        for (let i = 0; i < r.length; i++) {
+                            r[i]["fields"]["pk"] = r[i]["pk"]
+                        }
+                        this.sellers = r
+                    })
+
+
+                    axios({
+                        method: "get",
+                        url: "{% url 'product.get_workers' %}",
+                        headers: {"X-CSRFToken": '{{csrf_token}}'}
+                    }).then((r) => {
+                        var r = JSON.parse(r.data.result)
+                        for (let i = 0; i < r.length; i++) {
+                            r[i]["fields"]["pk"] = r[i]["pk"]
+                        }
+                        this.workers = r
+                    })
+
+
+                    axios({
+                        method: "get",
+                        url: "{% url 'product.get_quantity_types' %}",
+                        headers: {"X-CSRFToken": '{{csrf_token}}'}
+                    }).then((r) => {
+                        var r = JSON.parse(r.data.result)
+                        for (let i = 0; i < r.length; i++) {
+                            r[i]["fields"]["pk"] = r[i]["pk"]
+                        }
+                        this.quantity_types = r
+                    })
+                },
+                addProduct(p, w) {
+                    p["quantity"] = 1
+                    p["total"] = p.price
+                    for (let i = 0; i < this.quantity_types.length; i++) {
+                        if (this.quantity_types[i]["pk"] == p["quantity_type"]) {
+                            p["quantity_type"] = this.quantity_types[i]["fields"]
+                        }
+                    }
+                    p["total"] = p.price * p.quantity_type.value * this.activeCurrency["fields"]["rate"]
+                    this.activeProducts.push(p)
+                },
+                searchProducts() {
+                    this.results.length = 0
+
+                    if (this.search?.length < 3) {
+                        return
+                    }
+                    try {
+                        var bodyFormData = new FormData();
+                        bodyFormData.append('query', this.search);
+                        axios({
+                            method: "post",
+                            url: "{% url 'product.autocomplete' %}",
+                            data: bodyFormData,
+                            headers: {"X-CSRFToken": '{{csrf_token}}'}
+                        }).then((r) => {
+                            var r = JSON.parse(r.data.result)
+                            for (let i = 0; i < r.length; i++) {
+                                r[i]["fields"]["pk"] = r[i]["pk"]
+
+
+                            }
+                            this.results = r
+                        })
+                    } catch (e) {
+
+                    }
+                },
+                save(item, newquan) {
+                    objIndex = this.activeProducts.findIndex((obj => obj.pk == item.pk));
+                    item.total = item.price * newquan * item.quantity_type.value
+                    this.$set(this.activeProducts, objIndex, item)
+
+                    this.snack = true
+                    this.snackColor = 'success'
+                    this.snackText = 'Quantity updated successfully'
+                },
+                save2(item, newprice) {
+                    objIndex = this.activeProducts.findIndex((obj => obj.pk == item.pk));
+                    item.total = item.quantity * newprice * item.quantity_type.value
+                    this.$set(this.activeProducts, objIndex, item)
+
+                    this.snack = true
+                    this.snackColor = 'success'
+                    this.snackText = 'Price updated successfully'
+                },
+                addInvoice() {
+                    this.finalData = {
+                        total: this.total,
+                        discount: this.discount,
+                        dept: this.dept,
+                        payed: this.payed,
+                        activeCurrency: this.activeCurrency.pk,
+                        activeSeller: this.activeSeller.pk,
+                        activeWorker: this.activeWorker.pk,
+                        paydate: this.paydate,
+                        activeProducts: this.activeProducts,
+                    }
+
+                    var data = JSON.stringify(this.finalData)
+                    var form = new FormData()
+                    form.append("data", data)
+                    axios({
+                        method: "post",
+                        url: "{% url 'invoice.add' %}",
+                        data: form,
+                        headers: {"X-CSRFToken": '{{csrf_token}}'}
+                    }).then((r) => {
+                        window.location.href = "{% url 'invoice.view.last' %}"
+                    })
+                }
+            }
+        })
+    </script>
+{% endblock %}

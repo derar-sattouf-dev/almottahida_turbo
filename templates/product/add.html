@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>
+                Add New Product
+            </span>
+
+            <a class="link" href="{% url 'product.all' %}">All Products</a>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{% url 'product.add' %}">
+                {% csrf_token %}
+                <div class="row">
+                    {#General#}
+                    <div class="col-12 col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">General information</div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12 col-md-6">{{ form.name|as_crispy_field }}</div>
+                                    <div class="col-12 col-md-6">{{ form.location|as_crispy_field }}</div>
+                                    <div class="col-12 col-md-6">{{ form.identifier|as_crispy_field }}</div>
+                                    <div class="col-12 col-md-6">{{ form.barcode|as_crispy_field }}</div>
+                                    <div class="col-12 col-md-6">{{ form.weight|as_crispy_field }}</div>
+                                    <div class="col-12 col-md-6">{{ form.weight_value|as_crispy_field }}</div>
+                                    <div class="col-12 col-md-6">
+                                        {{ form.expire|as_crispy_field }}
+
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div style="display:none;">
+                                            {{ form.image|as_crispy_field }}
+                                        </div>
+                                        <label for="formFile" class="form-label">Image</label>
+                                        <input class="form-control" type="file" id="image">
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {# Pricing #}
+                    <div class="col-12 col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">Pricing ($)</div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12 col-md-6">{{ form.stock_price|as_crispy_field }}</div>
+                                    <div class="col-12 col-md-6">{{ form.price|as_crispy_field }}</div>
+                                    <div class="col-12 col-md-6">{{ form.special|as_crispy_field }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {# Relations #}
+                    <div class="col-12 col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">Relations</div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12 col-md-6">{{ form.category|as_crispy_field }}</div>
+                                    <div class="col-12 col-md-6">{{ form.seller|as_crispy_field }}</div>
+                                    <div class="col-12 col-md-6">{{ form.material|as_crispy_field }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {# Quantity #}
+                    <div class="col-12 col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">Quantity</div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12 col-md-6">{{ form.quantity_type|as_crispy_field }}</div>
+                                    <div class="col-12 col-md-6">{{ form.quantity|as_crispy_field }}</div>
+                                    <div class="col-12 col-md-6">{{ form.extra_quantity|as_crispy_field }}</div>
+                                    <div class="col-12 col-md-6">{{ form.alert_if_lower_than|as_crispy_field }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success">Add Product</button>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .v-application--wrap {
+            min-height: unset;
+        }
+    </style>
+
+    <script>
+        $('document').ready(function () {
+            $('#image').on('change', function () {
+                var $files = $(this).get(0).files;
+
+                if ($files.length) {
+                    // Reject big files
+                    if ($files[0].size > $(this).data('max-size') * 1024) {
+                        console.log('Please select a smaller file');
+                        return false;
+                    }
+                    console.log('Uploading file to Imgur..');
+                    var apiUrl = 'https://api.imgur.com/3/image';
+                    var apiKey = 'de1f436286677e8';
+                    var settings = {
+                        async: false,
+                        crossDomain: true,
+                        processData: false,
+                        contentType: false,
+                        type: 'POST',
+                        url: apiUrl,
+                        headers: {
+                            Authorization: 'Client-ID ' + apiKey,
+                            Accept: 'application/json',
+                        },
+                        mimeType: 'multipart/form-data',
+                    };
+
+                    var formData = new FormData();
+                    formData.append('image', $files[0]);
+                    settings.data = formData;
+                    $.ajax(settings).done(function (response) {
+                        $("#id_image").val(JSON.parse(response).data["link"])
+                        alert("Image uploaded successfully")
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock %}

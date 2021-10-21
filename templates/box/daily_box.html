@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-4">
+            <div class="card">
+                <div class="card-header">
+                    Add New Operation To Daily Box Account
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'box.daily' %}">
+                        {% csrf_token %}
+                        {{ form.operation|as_crispy_field }}
+                        {{ form.currency|as_crispy_field }}
+                        {{ form.amount|as_crispy_field }}
+                        {{ form.reason|as_crispy_field }}
+                        <button type="submit" class="btn btn-success">Add Operation</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="card">
+                <div class="card-header">
+                    Today's Operations
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Operation</th>
+                            <th>Currency</th>
+                            <th>Amount</th>
+                            <th>Reason</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for op in ops %}
+                            <tr>
+                                <td>
+                                    {% if op.operation == 1 %}
+                                        Add
+                                    {% else %}
+                                        Take
+                                    {% endif %}
+                                </td>
+                                <td>{{ op.currency.name }}</td>
+                                <td>{{ op.amount }}</td>
+                                <td>{{ op.reason }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

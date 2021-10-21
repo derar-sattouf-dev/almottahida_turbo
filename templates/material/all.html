@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="row">
+        <div class="col-12 col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    Add Active Ingredients
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'material.all' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="method" value="post">
+                        {{ form|crispy }}
+                        <button type="submit" class="btn btn-success">Add Active Ingredients</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-8 ">
+            <div class="card">
+                <div class="card-header">
+                    All Materials
+                </div>
+                <div class="card-body">
+                    <table class="table table-responsive-md table-striped">
+                        <thead>
+                        <tr>
+                            <th>Active Ingredients</th>
+                            <th>Description</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for material in materials %}
+                            <tr>
+                                <td>{{ material.name }}</td>
+                                <td>{{ material.desc }}</td>
+                                <td>
+{#                                    <button type="button" class="btn btn-danger btn-sm delete-btn" data-toggle="modal"#}
+{#                                            data-target="#deleteModal" data-id="{{ material.id }}">#}
+{#                                        Delete#}
+{#                                    </button>#}
+                                    <button type="button" class="btn btn-primary btn-sm edit-btn" data-toggle="modal"
+                                            data-target="#updateModal" data-id="{{ material.id }}"
+                                            data-desc="{{ material.desc }}" data-name="{{ material.name }}">
+                                        Edit
+
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% if materials.has_other_pages %}
+                        <ul class="pagination mx-auto">
+                            {% if materials.has_previous %}
+                                <li class="page-item"><a class="page-link"
+                                                         href="?page={{ materials.previous_page_number }}">&laquo;</a>
+                                </li>
+                            {% else %}
+                                <li class="disabled page-item"><a class="page-link">&laquo;</a></li>
+                            {% endif %}
+                            {% for i in materials.paginator.page_range %}
+                                {% if materials.number == i %}
+                                    <li class="active page-item"><a class="page-link">{{ i }} <span
+                                            class="sr-only">(current)</span></a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if materials.has_next %}
+                                <li class="page-item"><a class="page-link"
+                                                         href="?page={{ materials.next_page_number }}">&raquo;</a>
+                                </li>
+                            {% else %}
+                                <li class="disabled page-item"><a class="page-link">&raquo;</a></li>
+                            {% endif %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade " id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Delete Material ?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    If you deleted this material you will not be able to filter products that belongs to it.
+                </div>
+                <form action="{% url 'material.all' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="method" value="delete">
+                    <input type="hidden" name="material_id" id="material_id_to_delete">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Ok Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Button trigger modal -->
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog"
+         aria-labelledby="updateModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Update Material</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="post" action="{% url 'material.all' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="method" value="put">
+                    <input type="hidden" name="material_id" id="material_id_to_edit">
+
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="material_name_edit">Material Name</label>
+                            <input type="text" class="form-control" id="material_name_edit"
+                                   placeholder="Enter material name" name="name">
+
+                        </div>
+                        <div class="form-group">
+                            <label for="material_desc_edit">Material Description</label>
+                            <input type="text" name="desc" class="form-control" id="material_desc_edit"
+                                   placeholder="Enter desc">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Update Material</button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $(".delete-btn").click(function () {
+                var material_id = $(this).attr("data-id");
+                $("#material_id_to_delete").val(material_id)
+            });
+
+            $(".edit-btn").click(function () {
+                var material_name = $(this).attr("data-name");
+                var material_desc = $(this).attr("data-desc");
+                var material_id = $(this).attr("data-id");
+                $("#material_id_to_edit").val(material_id)
+                $("#material_name_edit").val(material_name);
+                $("#material_desc_edit").val(material_desc);
+            })
+        })
+    </script>
+{% endblock %}
+
+

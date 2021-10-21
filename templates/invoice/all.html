@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <table class="table table-responsive-md table-striped">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Seller</th>
+            <th>Discount</th>
+            <th>Payed</th>
+            <th>Dept</th>
+            <th>Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for invoice in invoices %}
+            <tr>
+                <th>{{ invoice.date_published|date }}</th>
+                <th>
+                    <a class="link"
+                       href="{% url 'invoice.seller.view' invoice.seller.pk %}">{{ invoice.seller.name }}</a>
+                </th>
+                <td>{{ invoice.discount }}{{ invoice.currency }}</td>
+                <th class="text-success">{{ invoice.payed }}{{ invoice.currency }}</th>
+                <th class="text-danger">{{ invoice.dept }}{{ invoice.currency }}</th>
+                <th>{{ invoice.total }}{{ invoice.currency }}</th>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

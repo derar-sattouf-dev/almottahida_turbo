@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+
+
+        <div class="col-12">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">Product</th>
+                    <th scope="col">Quantity Type</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Piece Price</th>
+                    <th scope="col">Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>{{ product.product.name }}</td>
+                        <td>{{ product.quantity_type.name }}</td>
+                        <td>{{ product.quantity }}</td>
+                        <td>{{ product.piece_price }}</td>
+                        <th scope="row">{{ product.total }}</th>
+                    </tr>
+                {% endfor %}
+
+
+                </tbody>
+            </table>
+        </div>
+        <div class="col-12">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">Seller Name</th>
+                    <th scope="col">Seller Phone</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Date</th>
+                    {#                    <th scope="col">Currency</th>#}
+                    <th scope="col">Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ invoice.seller.name }}</td>
+                    <td>{{ invoice.seller.phone }}</td>
+                    <td>{{ invoice.seller.address }}</td>
+                    <td>{{ invoice.date_published|date }}</td>
+                    {#                    <td>{{ invoice.currency.name }}</td>#}
+                    <td>{{ invoice.total }}{{ invoice.currency.name }} </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
