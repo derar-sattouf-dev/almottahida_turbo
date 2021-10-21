@@ -339,7 +339,7 @@ def add_product(request):
             messages.add_message(request, messages.SUCCESS, 'Product added successfully.')
             return redirect("product.all")
         else:
-            return  HttpResponse(form.errors)
+            return HttpResponse(form.errors)
     else:
         form = ProductForm()
         return render(request, 'product/add.html', {"form": form})
@@ -500,6 +500,7 @@ def seller_invoices(request, pk):
     invoices = Invoice.objects.filter(seller=pk)
     return render(request, "invoice/all.html", {"invoices": invoices})
 
+
 @login_required(login_url=LOGIN_URL)
 def rawad(request):
     if "search" in request.GET:
@@ -518,5 +519,3 @@ def rawad(request):
     for product in products:
         product.weight_value = float(product.quantity * product.quantity_type.value) + float(product.extra_quantity)
     return render(request, "product/rawad.html", {"products": products})
-
-
