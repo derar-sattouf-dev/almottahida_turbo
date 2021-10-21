@@ -338,6 +338,8 @@ def add_product(request):
             form.save()
             messages.add_message(request, messages.SUCCESS, 'Product added successfully.')
             return redirect("product.all")
+        else:
+            return  HttpResponse(form.errors)
     else:
         form = ProductForm()
         return render(request, 'product/add.html', {"form": form})
