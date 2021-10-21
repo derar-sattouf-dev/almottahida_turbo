@@ -17,7 +17,12 @@
             <span>
                 All Products
             </span>
+            <form method="get" action="" style="flex-grow: 1">
+                <div class="mx-4">
+                    <input  class="form-control" name="search"  placeholder="Search products">
+                </div>
 
+            </form>
             <a class="btn btn-primary" href="{% url 'product.add' %}">Add New Product</a>
         </div>
         <div class="card-body">

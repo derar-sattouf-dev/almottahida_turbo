@@ -138,6 +138,7 @@ def daily_box(request):
     #               {"form": form, "ops": ops})
     pass
 
+
 # Workers
 @login_required(login_url=LOGIN_URL)
 def all_workers(request):
@@ -353,15 +354,18 @@ def edit_product(request, pk):
 
 @login_required(login_url=LOGIN_URL)
 def all_products(request):
-    products = Product.objects.all()
-    page = request.GET.get('page', 1)
-    paginator = Paginator(products, 15)
-    try:
-        products = paginator.page(page)
-    except PageNotAnInteger:
-        products = paginator.page(1)
-    except EmptyPage:
-        products = paginator.page(paginator.num_pages)
+    if "search" in request.GET:
+        products = Product.objects.filter(name__contains=request.GET["search"])
+    else:
+        products = Product.objects.all()
+        page = request.GET.get('page', 1)
+        paginator = Paginator(products, 15)
+        try:
+            products = paginator.page(page)
+        except PageNotAnInteger:
+            products = paginator.page(1)
+        except EmptyPage:
+            products = paginator.page(paginator.num_pages)
     return render(request, "product/all.html", {"products": products})
 
 

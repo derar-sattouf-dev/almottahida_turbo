@@ -71,7 +71,7 @@ DATABASES = {
         'NAME': 'almoekha_accounting_database',
         'USER': 'almoekha_accounting_user',
         'PASSWORD': 'TITNDPilavm7050@!',
-        'HOST': 'localhost',  # Or an IP Address that your DB is hosted on
+        'HOST': 'localhost',
         'PORT': '3306',
     }
 }

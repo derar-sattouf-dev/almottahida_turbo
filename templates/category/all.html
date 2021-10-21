@@ -35,11 +35,12 @@
                     All Categorys
                 </div>
                 <div class="card-body">
-                    <table class="table table-responsive-md table-striped">
+                    <table class="table table-responsive table-striped">
                         <thead>
                         <tr>
                             <th>Category Name</th>
                             <th>Category Description</th>
+                            <th>Type</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -48,6 +49,7 @@
                             <tr>
                                 <td>{{ category.name }}</td>
                                 <td>{{ category.desc }}</td>
+                                <td>{{ category.type }}</td>
                                 <td>
                                     <button type="button" class="btn btn-danger btn-sm delete-btn" data-toggle="modal"
                                             data-target="#deleteModal" data-id="{{ category.id }}">
