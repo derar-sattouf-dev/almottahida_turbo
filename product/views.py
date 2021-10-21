@@ -381,15 +381,17 @@ def add_invoice(request):
     if request.method == "POST":
         data = json.loads(request.POST.get("data"))
         invoice = Invoice()
-
+        # type
+        invoice.type = data["activeType"]
+        # currency
         cur = Currency.objects.get(pk=data["activeCurrency"])
         invoice.currency = cur
         cur.value = cur.value + float(data["payed"])
         cur.save()
-
+        # seller
         se = Seller.objects.get(pk=data["activeSeller"])
         invoice.seller = se
-
+        # worker
         wo = Worker.objects.get(pk=data["activeWorker"])
         invoice.worker = wo
 
@@ -401,7 +403,6 @@ def add_invoice(request):
 
         # invoice.expected_earn = Currency.objects.get(pk=data["activeCurrency"])
         invoice.save()
-
         for product in data["activeProducts"]:
             invoiceProduct = InvoiceProduct()
             invoiceProduct.invoice_id = invoice.pk
@@ -409,12 +410,27 @@ def add_invoice(request):
             invoiceProduct.total = product["total"]
             invoiceProduct.quantity = product["quantity"]
             invoiceProduct.piece_price = product["price"]
-            invoiceProduct.extra_quantity = 0
-            invoiceProduct.quantity_type_id = 1
+            invoiceProduct.extra_quantity = product["extra_quantity"]
+            active_quantity_type = QuantityType.objects.get(pk=product["quantity_type"]["pk"])
+            invoiceProduct.quantity_type = active_quantity_type
             invoiceProduct.save()
             realProduct = Product.objects.get(pk=product["pk"])
             flval = float(product["quantity"])
-            realProduct.quantity = realProduct.quantity - flval
+            if invoice.type == "Sale":
+                boc_val = float(active_quantity_type.value)
+                current_t = float(realProduct.quantity)
+                current_e = float(realProduct.extra_quantity)
+                sold_t = product["quantity"]
+                sold_e = product["extra_quantity"]
+                total_peer_pice_in_stock = float(boc_val) * float(current_t) + float(current_e)
+                total_peer_pice_to_sale = float(boc_val) * float(sold_t) + float(sold_e)
+                will_remian_by_pice = float(total_peer_pice_in_stock) - float(total_peer_pice_to_sale)
+                will_be_e = float(will_remian_by_pice % boc_val)
+                will_be_t = float(float((will_remian_by_pice - will_be_e)) / float(boc_val))
+                realProduct.quantity = float(will_be_t)
+                realProduct.extra_quantity = float(will_be_e)
+            if invoice.type == "Purchase":
+                realProduct.quantity = realProduct.quantity + flval
             realProduct.save()
             resp = {"pk": invoice.pk}
         return JsonResponse(resp)
@@ -481,3 +497,24 @@ def all_invoices(request):
 def seller_invoices(request, pk):
     invoices = Invoice.objects.filter(seller=pk)
     return render(request, "invoice/all.html", {"invoices": invoices})
+
+@login_required(login_url=LOGIN_URL)
+def rawad(request):
+    if "search" in request.GET:
+        products = Product.objects.filter(name__contains=request.GET["search"])
+    else:
+        products = Product.objects.all()
+        page = request.GET.get('page', 1)
+        paginator = Paginator(products, 15)
+        try:
+            products = paginator.page(page)
+        except PageNotAnInteger:
+            products = paginator.page(1)
+        except EmptyPage:
+            products = paginator.page(paginator.num_pages)
+
+    for product in products:
+        product.weight_value = float(product.quantity * product.quantity_type.value) + float(product.extra_quantity)
+    return render(request, "product/rawad.html", {"products": products})
+
+

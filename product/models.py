@@ -80,6 +80,8 @@ class Product(models.Model):
 
 
 class Invoice(models.Model):
+    TYPE = Choices('Sale', 'Purchase')
+    type = models.CharField(max_length=100, choices=TYPE, default=TYPE.Sale)
     total = models.FloatField()
     discount = models.FloatField()
     payed = models.FloatField()

@@ -19,7 +19,7 @@
             </span>
             <form method="get" action="" style="flex-grow: 1">
                 <div class="mx-4">
-                    <input  class="form-control" name="search"  placeholder="Search products">
+                    <input class="form-control" name="search" placeholder="Search products">
                 </div>
 
             </form>
@@ -29,55 +29,31 @@
             <table class="table table-striped table-hover table-responsive">
                 <thead>
                 <tr>
-                    <th scope="col">Edit</th>
                     <th scope="col">Image</th>
                     <th scope="col">Name</th>
+                    <th scope="col">Material</th>
+                    <th scope="col">Total Quantity</th>
                     <th scope="col">Stock</th>
                     <th scope="col">Price</th>
-                    <th scope="col">Special</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Seller</th>
-                    <th scope="col">Material</th>
-                    <th scope="col">Quantity Type</th>
-                    <th scope="col">Weight</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Extra Quantity</th>
-                    <th scope="col">Barcode</th>
-                    <th scope="col">Identifier</th>
-                    <th scope="col">Location</th>
-                    <th scope="col">Alert Before</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for product in products %}
                     <tr>
-                        <td scope="row"><a href="{% url 'product.edit' product.pk %}" class=" btn btn-primary">Edit</a>
-                        </td>
                         <td>
                             <img src="{{ product.image }}" height="50" alt="">
                         </td>
                         <td scope="row">{{ product.name }}</td>
-                        <td scope="row">{{ product.stock_price }}</td>
-                        <td scope="row">{{ product.price }}</td>
-                        <td scope="row">{{ product.special }}</td>
-                        <td scope="row">{{ product.category }}</td>
-                        <td scope="row">{{ product.seller }}</td>
                         <td scope="row">
                             {% for material in product.material.all %}
                                 <span class="badge badge-info">{{ material.name }}</span>
                             {% endfor %}
-
                         </td>
-                        <td scope="row">{{ product.quantity_type }}</td>
-                        <td scope="row">{{ product.weight_value }}{{ product.weight }}</td>
-                        <td scope="row">{{ product.quantity }}({{ product.q }})</td>
-                        <td scope="row">{{ product.extra_quantity }}</td>
-                        <td scope="row">{{ product.barcode }}</td>
-                        <td scope="row">{{ product.identifier }}</td>
-                        <td scope="row">{{ product.location }}</td>
-                        <td scope="row"><strong
-                                class="text-danger">{{ product.alert_if_lower_than }} </strong> {{ product.quantity_type }}
+                        <td>
+                            {{ product.weight_value }} {{ product.weight }}
                         </td>
+                        <td scope="row">{{ product.stock_price }}</td>
+                        <td scope="row">{{ product.price }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

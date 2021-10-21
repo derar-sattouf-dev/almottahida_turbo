@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <table class="table table-responsive-md table-striped">
+    <table class="table table-responsive table-striped">
         <thead>
         <tr>
+            <th>Type</th>
             <th>Date</th>
             <th>Seller</th>
             <th>Discount</th>
@@ -15,15 +16,16 @@
         <tbody>
         {% for invoice in invoices %}
             <tr>
+                <th>{{ invoice.type }}</th>
                 <th>{{ invoice.date_published|date }}</th>
                 <th>
                     <a class="link"
                        href="{% url 'invoice.seller.view' invoice.seller.pk %}">{{ invoice.seller.name }}</a>
                 </th>
-                <td>{{ invoice.discount }}{{ invoice.currency }}</td>
-                <th class="text-success">{{ invoice.payed }}{{ invoice.currency }}</th>
-                <th class="text-danger">{{ invoice.dept }}{{ invoice.currency }}</th>
-                <th>{{ invoice.total }}{{ invoice.currency }}</th>
+                <td>{{ invoice.discount }}{{ invoice.currency.name }}</td>
+                <th class="text-success">{{ invoice.payed }}{{ invoice.currency.name }}</th>
+                <th class="text-danger">{{ invoice.dept }}{{ invoice.currency.name }}</th>
+                <th>{{ invoice.total }}{{ invoice.currency.name }}</th>
             </tr>
         {% endfor %}
         </tbody>

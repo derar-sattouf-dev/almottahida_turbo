@@ -24,4 +24,5 @@ urlpatterns = [
     path("product/get_workers/", views.get_workers, name='product.get_workers'),
     path("product/get_quantity_types/", views.get_quantity_types, name='product.get_quantity_types'),
     path("", views.all_products, name='product.all'),
+    path("rawad/", views.rawad, name='product.rawad'),
 ]

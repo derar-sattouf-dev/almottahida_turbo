@@ -116,6 +116,21 @@
                             </template>
                         </v-edit-dialog>
                     </template>
+                    <template v-slot:item.extra_quantity="props">
+                        <v-edit-dialog
+                                :return-value.sync="props.item.extra_quantity"
+                                @save="save2(props.item,props.item.price)"
+                        >
+                            [[props.item.extra_quantity]]
+                            <template v-slot:input>
+                                <v-text-field
+                                        v-model="props.item.extra_quantity"
+                                        label="Edit"
+                                        single-line
+                                ></v-text-field>
+                            </template>
+                        </v-edit-dialog>
+                    </template>
                 </v-data-table>
 
 
@@ -169,6 +184,15 @@
                                 </v-toolbar>
                                 <v-container fluid>
                                     <v-row class="mt-5 align-center">
+                                        <v-col cols="3">
+                                            <v-select
+                                                    :items="['Sale', 'Purchase']"
+                                                    label="Invoice Type"
+                                                    v-model="activeType"
+                                                    outlined
+                                            ></v-select>
+                                            [[ activeType]]
+                                        </v-col>
                                         <v-col cols="3">
                                             <v-combobox
                                                     v-model="activeCurrency"
@@ -237,7 +261,7 @@
                                             <v-text-field
                                                     v-model="payed"
                                                     type="number"
-                                                    label="Client Payed"
+                                                    :label="activeType == 'Purchase' ? 'We Payed' : 'Client Payed'"
                                                     outlined
                                                     :suffix="activeCurrency.fields?.name"
                                             >
@@ -322,6 +346,7 @@
             el: '#app',
             vuetify: new Vuetify(),
             data: {
+                activeType: "Sale",
                 finalData: {},
                 total: 0,
                 discount: 0,
@@ -363,6 +388,11 @@
                         text: 'Quantity',
                         sortable: true,
                         value: 'quantity',
+                    },
+                    {
+                        text: 'Extra Quantity',
+                        sortable: true,
+                        value: 'extra_quantity',
                     },
 
                     {
@@ -482,7 +512,7 @@
                 },
                 save(item, newquan) {
                     objIndex = this.activeProducts.findIndex((obj => obj.pk == item.pk));
-                    item.total = item.price * newquan * item.quantity_type.value
+                    item.total = item.price * newquan * item.quantity_type.value + (item.extra_quantity * item.price)
                     this.$set(this.activeProducts, objIndex, item)
 
                     this.snack = true
@@ -491,7 +521,17 @@
                 },
                 save2(item, newprice) {
                     objIndex = this.activeProducts.findIndex((obj => obj.pk == item.pk));
-                    item.total = item.quantity * newprice * item.quantity_type.value
+                    item.total = item.quantity * newprice * item.quantity_type.value + (item.extra_quantity * item.price)
+                    this.$set(this.activeProducts, objIndex, item)
+
+                    this.snack = true
+                    this.snackColor = 'success'
+                    this.snackText = 'Price updated successfully'
+                },
+
+                save3(item, new_extra_quantity) {
+                    objIndex = this.activeProducts.findIndex((obj => obj.pk == item.pk));
+                    item.total = item.quantity * newprice * item.quantity_type.value + (new_extra_quantity * item.price)
                     this.$set(this.activeProducts, objIndex, item)
 
                     this.snack = true
@@ -509,6 +549,7 @@
                         activeWorker: this.activeWorker.pk,
                         paydate: this.paydate,
                         activeProducts: this.activeProducts,
+                        activeType: this.activeType
                     }
 
                     var data = JSON.stringify(this.finalData)
