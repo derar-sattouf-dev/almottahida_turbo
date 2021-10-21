@@ -517,6 +517,5 @@ def rawad(request):
             products = paginator.page(paginator.num_pages)
 
     for product in products:
-        product.weight_value = (float(product.quantity * product.quantity_type.value) + float(
-            product.extra_quantity)) / float(product.weight_value)
+        product.weight_value = (float(product.quantity * product.quantity_type.value) + float(product.extra_quantity)) * float(product.weight_value)
     return render(request, "product/rawad.html", {"products": products})
