@@ -126,7 +126,7 @@ def add_seller_payment(request, pk):
         op = form.cleaned_data["operation"]
         currency = Currency.objects.get(name__exact=form.cleaned_data["currency"])
         currency_value = currency.value
-        if op == "Add":
+        if op == "Give":
             currency_value -= amount
         else:
             currency_value += amount
@@ -144,7 +144,7 @@ def add_seller_payment(request, pk):
 
     total_payments = 0
     for payment in payments:
-        if payment.operation == "Add":
+        if payment.operation == "Give":
             total_payments -= payment.amount / payment.currency.rate
         else:
             total_payments += payment.amount / payment.currency.rate
@@ -163,10 +163,10 @@ def daily_box(request):
         amount = form.cleaned_data["amount"]
         currency = Currency.objects.get(name__exact=form.cleaned_data["currency"])
         currency_value = currency.value
-        if op == "Add":
-            currency_value += amount
-        else:
+        if op == "Give":
             currency_value -= amount
+        else:
+            currency_value += amount
         currency.value = currency_value
         currency.save()
         form.save()
