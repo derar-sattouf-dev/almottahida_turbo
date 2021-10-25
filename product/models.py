@@ -41,6 +41,8 @@ class Seller(models.Model):
     name = models.CharField(max_length=100, unique=True)
     phone = models.CharField(max_length=200, null=True, unique=True, blank=False)
     address = models.CharField(max_length=200, null=True, blank=False)
+    for_him = models.FloatField(default=0, blank=True)
+    on_him = models.FloatField(default=0, blank=True)
 
     def __str__(self):
         return self.name
@@ -67,7 +69,7 @@ class Product(models.Model):
     quantity_type = models.ForeignKey(QuantityType, on_delete=models.SET_NULL, null=True)
     quantity = models.FloatField()
     weight = models.CharField(max_length=100, choices=STATUS, default=STATUS.KG)
-    weight_value = models.CharField(max_length=100, default="0")
+    weight_value = models.IntegerField(default=0)
     extra_quantity = models.FloatField(null=True, default=0)
     barcode = models.CharField(null=True, max_length=100, blank=False, default=" ")
     identifier = models.CharField(null=True, max_length=100, blank=False)
@@ -82,17 +84,16 @@ class Product(models.Model):
 class Invoice(models.Model):
     TYPE = Choices('Sale', 'Purchase')
     type = models.CharField(max_length=100, choices=TYPE, default=TYPE.Sale)
-    total = models.FloatField()
     discount = models.FloatField()
     payed = models.FloatField()
     expected_earn = models.FloatField(blank=True, null=True)
     earn = models.FloatField(blank=True, null=True)
-    dept = models.FloatField()
-    date_published = models.DateTimeField(auto_now_add=True)
+    total = models.FloatField()
+    remaining = models.FloatField()
+    date_added = models.DateTimeField(auto_now_add=True)
     currency = models.ForeignKey(Currency, on_delete=models.SET_NULL, null=True)
     seller = models.ForeignKey(Seller, on_delete=models.SET_NULL, null=True)
     worker = models.ForeignKey(Worker, on_delete=models.SET_NULL, null=True)
-    paydate = models.DateField()
 
 
 class InvoiceProduct(models.Model):
@@ -113,12 +114,9 @@ class InvoicePayment(models.Model):
 
 
 class DailyBoxOperation(models.Model):
-    class Month(models.TextChoices):
-        ADD = '1', "Add"
-        TAKE = '2', "Take"
-
+    OPERATIONS = Choices('Add', 'Take')
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE, )
     amount = models.FloatField()
-    operation = models.CharField(choices=Month.choices, max_length=5)
-    reason = models.CharField(max_length=255, )
+    operation = models.CharField(choices=OPERATIONS, max_length=5, default=OPERATIONS.Add)
+    reason = models.CharField(max_length=255)
     add_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)

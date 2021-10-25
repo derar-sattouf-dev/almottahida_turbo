@@ -1,4 +1,5 @@
-from django.forms import ModelForm
+from django import forms
+from django.forms import ModelForm, HiddenInput
 
 from product.models import *
 
@@ -14,6 +15,12 @@ class SellerForm(ModelForm):
         model = Seller
         fields = "__all__"
 
+    def __init__(self, *args, **kwargs):
+        super(SellerForm, self).__init__(*args, **kwargs)
+        super().__init__()
+        self.fields['for_him'].widget = HiddenInput()
+        self.fields['on_him'].widget = HiddenInput()
+
 
 class InvoicePaymentForm(ModelForm):
     class Meta:
@@ -21,10 +28,10 @@ class InvoicePaymentForm(ModelForm):
         fields = "__all__"
 
 
-# class DailyBoxOperationForm(ModelForm):
-#     class Meta:
-#         model = DailyBoxOperation
-#         fields = "__all__"
+class DailyBoxOperationForm(ModelForm):
+    class Meta:
+        model = DailyBoxOperation
+        fields = "__all__"
 
 
 class WorkerForm(ModelForm):

@@ -101,6 +101,7 @@ def all_sellers(request):
     # Get method
     else:
         form = SellerForm()
+
     sellers = Seller.objects.all()
     page = request.GET.get('page', 1)
     paginator = Paginator(sellers, 15)
@@ -128,14 +129,24 @@ def add_seller_payment(request, pk):
 
 @login_required(login_url=LOGIN_URL)
 def daily_box(request):
-    # form = DailyBoxOperationForm(request.POST or None)
-    # if form.is_valid():
-    #     form.save()
-    # today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
-    # today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
-    # ops = DailyBoxOperation.objects.filter(add_date__range=(today_min, today_max))
-    # return render(request, "box/daily_box.html",
-    #               {"form": form, "ops": ops})
+    form = DailyBoxOperationForm(request.POST or None)
+    if form.is_valid():
+        op = form.cleaned_data["operation"]
+        amount = form.cleaned_data["amount"]
+        currency = Currency.objects.get(name__exact=form.cleaned_data["currency"])
+        currency_value = currency.value
+        if op == "Add":
+            currency_value += amount
+        else:
+            currency_value -= amount
+        currency.value = currency_value
+        currency.save()
+        form.save()
+    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+    ops = DailyBoxOperation.objects.filter(add_date__range=(today_min, today_max)).order_by("-pk")
+    return render(request, "box/daily_box.html",
+                  {"form": form, "ops": ops})
     pass
 
 
