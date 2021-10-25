@@ -359,7 +359,7 @@
             methods: {
                 calc() {
                     if (this.activeProducts.length > 0) {
-                        var t = this.activeProducts.reduce((a, b) => +a + +((b.quantity * b.quantity_type.value) + b.extra_quantity  * (b.price)), 0);
+                        var t = this.activeProducts.reduce((a, b) => +a + +((b.quantity * b.quantity_type.value) + b.extra_quantity * (b.price)), 0);
                         t = t * this.activeCurrency.fields.rate || 0
                         t -= this.discount
                         this.total = t
@@ -456,7 +456,7 @@
                 },
                 save(item, newquan) {
                     objIndex = this.activeProducts.findIndex((obj => obj.pk == item.pk));
-                    item.total = item.price * newquan * item.quantity_type.value + (item.extra_quantity * item.price)
+                    item.total = ((newquan * item.quantity_type.value) + item.extra_quantity) * (item.price)
                     this.$set(this.activeProducts, objIndex, item)
 
                     this.snack = true
@@ -465,7 +465,7 @@
                 },
                 save2(item, newprice) {
                     objIndex = this.activeProducts.findIndex((obj => obj.pk == item.pk));
-                    item.total = item.quantity * newprice * item.quantity_type.value + (item.extra_quantity * item.price)
+                    item.total = ((item.quantity * item.quantity_type.value) + item.extra_quantity) * (newprice)
                     this.$set(this.activeProducts, objIndex, item)
 
                     this.snack = true
@@ -475,7 +475,7 @@
 
                 save3(item, new_extra_quantity) {
                     objIndex = this.activeProducts.findIndex((obj => obj.pk == item.pk));
-                    item.total = item.quantity * newprice * item.quantity_type.value + (new_extra_quantity * item.price)
+                    item.total = ((item.quantity * item.quantity_type.value) + new_extra_quantity) * (item.price)
                     this.$set(this.activeProducts, objIndex, item)
 
                     this.snack = true
