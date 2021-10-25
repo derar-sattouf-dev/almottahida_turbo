@@ -520,3 +520,8 @@ def rawad(request):
         product.weight_value = (float(product.quantity * product.quantity_type.value) + float(
             product.extra_quantity)) * float(product.weight_value)
     return render(request, "product/rawad.html", {"products": products})
+
+
+def show(request):
+    products = Product.objects.all()
+    return render(request, "product/show.html", {"products": products})

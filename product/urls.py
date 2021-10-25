@@ -25,4 +25,5 @@ urlpatterns = [
     path("product/get_quantity_types/", views.get_quantity_types, name='product.get_quantity_types'),
     path("", views.all_products, name='product.all'),
     path("rawad/", views.rawad, name='product.rawad'),
+    path("show/", views.show, name='product.show'),
 ]
