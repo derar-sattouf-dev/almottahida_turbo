@@ -27,27 +27,21 @@
                             <tr>
                                 <th>Type</th>
                                 <th>Total</th>
-                                <th>Remaining</th>
-                                <th>Currency</th>
                                 <th>Date</th>
                             </tr>
                             </thead>
                             <tbody>
                             {% for invoice in invoices %}
                                 <tr>
-                                    <td>Invoice</td>
-                                    <td>{{ invoice.total }}</td>
-                                    <td>{{ invoice.dept }}</td>
-                                    <td>{{ invoice.currency.name }}</td>
-                                    <td>{{ invoice.date_published|date }}</td>
+                                    <td>Invoice({{ invoice.type }})</td>
+                                    <td>{{ invoice.total }}{{ invoice.currency.name }}</td>
+                                    <td>{{ invoice.date_added|date }}</td>
                                 </tr>
                             {% endfor %}
                             {% for payment in payments %}
                                 <tr>
-                                    <td>Payment</td>
-                                    <td>{{ payment.amount }}</td>
-                                    <td>__</td>
-                                    <td>{{ payment.currency.name }}</td>
+                                    <td>Payment ({{ payment.operation }})</td>
+                                    <td>{{ payment.amount }}{{ payment.currency.name }}</td>
                                     <td>{{ payment.add_date|date }}</td>
                                 </tr>
                             {% endfor %}
@@ -55,13 +49,26 @@
                         </table>
                     </div>
                 </div>
+                <table class="table">
+                <thead>
+                <tr>
+                    <th>Total Invoices Totals</th>
+                    <th>Total Payment Totals</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                    <tbody>
+                    <tr>
+                        <th>{{ total_invoices }}</th>
+                        <th>{{ total_payments }}</th>
+                        <th>{{ total }}</th>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
 
         </div>
     </div>
     <style>
-    #div_id_seller{
-        display: none;
-    }
     </style>
 {% endblock %}

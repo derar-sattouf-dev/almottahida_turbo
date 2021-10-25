@@ -111,6 +111,8 @@ class InvoicePayment(models.Model):
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE, )
     add_date = models.DateTimeField(auto_now_add=True)
     amount = models.FloatField()
+    OPERATIONS = Choices('Add', 'Take')
+    operation = models.CharField(choices=OPERATIONS, max_length=5, default=OPERATIONS.Add)
 
 
 class DailyBoxOperation(models.Model):

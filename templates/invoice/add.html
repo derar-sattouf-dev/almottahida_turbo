@@ -191,7 +191,6 @@
                                                     v-model="activeType"
                                                     outlined
                                             ></v-select>
-                                            [[ activeType]]
                                         </v-col>
                                         <v-col cols="3">
                                             <v-combobox
@@ -221,60 +220,11 @@
                                             ></v-combobox>
                                         </v-col>
                                         <v-col cols="3">
-                                            <v-menu
-
-                                                    :close-on-content-click="true"
-                                                    transition="scale-transition"
-                                                    offset-y
-                                                    max-width="290px"
-                                                    min-width="auto"
-                                            >
-                                                <template v-slot:activator="{ on, attrs }">
-                                                    <v-text-field
-                                                            v-model="paydate"
-                                                            label="Pay Date"
-                                                            outlined
-                                                            persistent-hint
-                                                            v-bind="attrs"
-                                                            v-on="on"
-                                                    ></v-text-field>
-                                                </template>
-                                                <v-date-picker
-                                                        v-model="paydate"
-                                                        no-title
-                                                        @input="menu1 = false"
-                                                ></v-date-picker>
-                                            </v-menu>
-                                        </v-col>
-                                        <v-col cols="3">
                                             <v-text-field
                                                     v-model="discount"
                                                     type="number"
                                                     label="Discount amount"
                                                     outlined
-                                                    :suffix="activeCurrency.fields?.name"
-                                            >
-                                            </v-text-field>
-                                        </v-col>
-
-                                        <v-col cols="3">
-                                            <v-text-field
-                                                    v-model="payed"
-                                                    type="number"
-                                                    :label="activeType == 'Purchase' ? 'We Payed' : 'Client Payed'"
-                                                    outlined
-                                                    :suffix="activeCurrency.fields?.name"
-                                            >
-                                            </v-text-field>
-                                        </v-col>
-
-                                        <v-col cols="3">
-                                            <v-text-field
-                                                    v-model="dept"
-                                                    type="number"
-                                                    label="Remaining Dept"
-                                                    outlined
-                                                    disabled
                                                     :suffix="activeCurrency.fields?.name"
                                             >
                                             </v-text-field>
@@ -339,9 +289,7 @@
                 activeCurrency: function (old) {
                     this.calc()
                 },
-                payed: function (old) {
-                    this.calc()
-                },
+
             },
             el: '#app',
             vuetify: new Vuetify(),
@@ -350,15 +298,12 @@
                 finalData: {},
                 total: 0,
                 discount: 0,
-                dept: 0,
-                payed: 0,
                 currencies: [],
                 activeCurrency: "",
                 sellers: [],
                 workers: [],
                 activeSeller: "",
                 activeWorker: "",
-                paydate: new Date().toISOString().split("T")[0],
                 menu1: false,
                 dialog: true,
                 addDialog: false,
@@ -418,7 +363,6 @@
                         t = t * this.activeCurrency.fields.rate || 0
                         t -= this.discount
                         this.total = t
-                        this.dept = this.total - this.payed
                     }
                 },
                 prepare() {
@@ -542,12 +486,9 @@
                     this.finalData = {
                         total: this.total,
                         discount: this.discount,
-                        dept: this.dept,
-                        payed: this.payed,
                         activeCurrency: this.activeCurrency.pk,
                         activeSeller: this.activeSeller.pk,
                         activeWorker: this.activeWorker.pk,
-                        paydate: this.paydate,
                         activeProducts: this.activeProducts,
                         activeType: this.activeType
                     }

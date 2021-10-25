@@ -37,7 +37,7 @@
                     <th scope="col">Seller Phone</th>
                     <th scope="col">Address</th>
                     <th scope="col">Date</th>
-                    {#                    <th scope="col">Currency</th>#}
+                    <th scope="col">Currency</th>
                     <th scope="col">Total</th>
                 </tr>
                 </thead>
@@ -46,8 +46,8 @@
                     <td>{{ invoice.seller.name }}</td>
                     <td>{{ invoice.seller.phone }}</td>
                     <td>{{ invoice.seller.address }}</td>
-                    <td>{{ invoice.date_published|date }}</td>
-                    {#                    <td>{{ invoice.currency.name }}</td>#}
+                    <td>{{ invoice.date_added|date }}</td>
+                    <td>{{ invoice.currency.name }}</td>
                     <td>{{ invoice.total }}{{ invoice.currency.name }} </td>
                 </tr>
                 </tbody>

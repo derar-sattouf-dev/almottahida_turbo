@@ -17,7 +17,7 @@ class SellerForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(SellerForm, self).__init__(*args, **kwargs)
-        super().__init__()
+        # super().__init__()
         self.fields['for_him'].widget = HiddenInput()
         self.fields['on_him'].widget = HiddenInput()
 

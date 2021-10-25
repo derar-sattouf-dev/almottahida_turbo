@@ -76,6 +76,8 @@ def all_sellers(request):
                 form.save()
                 messages.add_message(request, messages.SUCCESS, 'Seller added successfully.')
                 return redirect("seller.all")
+            else:
+                return HttpResponse(form.errors)
         elif method == "delete":
             seller_id = request.POST.get("seller_id")
             Seller.objects.get(pk=seller_id).delete()
@@ -122,9 +124,25 @@ def add_seller_payment(request, pk):
         form.save()
     invoices = Invoice.objects.filter(seller_id=pk)
     payments = InvoicePayment.objects.filter(seller_id=pk)
+
+    total_invoices = 0
+    for invoice in invoices:
+        if invoice.type == "Sale":
+            total_invoices += invoice.total / invoice.currency.rate
+        else:
+            total_invoices -= invoice.total / invoice.currency.rate
+
+    total_payments = 0
+    for payment in payments:
+        if payment.operation == "Add":
+            total_payments -= payment.amount / payment.currency.rate
+        else:
+            total_payments += payment.amount / payment.currency.rate
     seller = Seller.objects.get(pk=pk)
+    total = total_invoices - total_payments
     return render(request, "seller/add_payment.html",
-                  {"form": form, "invoices": invoices, "payments": payments, "seller": seller})
+                  {"form": form, "invoices": invoices, "payments": payments, "seller": seller,
+                   "total_invoices": total_invoices, "total_payments": total_payments, "total": total})
 
 
 @login_required(login_url=LOGIN_URL)
@@ -396,24 +414,24 @@ def add_invoice(request):
         invoice = Invoice()
         # type
         invoice.type = data["activeType"]
-        # currency
+        # # currency
         cur = Currency.objects.get(pk=data["activeCurrency"])
         invoice.currency = cur
-        cur.value = cur.value + float(data["payed"])
-        cur.save()
+        # cur.value = cur.value + float(data["payed"])
+        # cur.save()
         # seller
         se = Seller.objects.get(pk=data["activeSeller"])
         invoice.seller = se
         # worker
         wo = Worker.objects.get(pk=data["activeWorker"])
         invoice.worker = wo
-
         invoice.total = data["total"]
         invoice.discount = data["discount"]
-        invoice.dept = data["dept"]
-        invoice.payed = data["payed"]
-        invoice.paydate = data["paydate"]
-
+        invoice.payed = 0
+        invoice.remaining = data["total"]
+        # invoice.dept = data["dept"]
+        # invoice.payed = data["payed"]
+        # invoice.paydate = data["paydate"]
         # invoice.expected_earn = Currency.objects.get(pk=data["activeCurrency"])
         invoice.save()
         for product in data["activeProducts"]:
@@ -443,7 +461,18 @@ def add_invoice(request):
                 realProduct.quantity = float(will_be_t)
                 realProduct.extra_quantity = float(will_be_e)
             if invoice.type == "Purchase":
-                realProduct.quantity = realProduct.quantity + flval
+                boc_val = float(active_quantity_type.value)
+                current_t = float(realProduct.quantity)
+                current_e = float(realProduct.extra_quantity)
+                purchased_t = product["quantity"]
+                purchased_e = product["extra_quantity"]
+                total_peer_pice_in_stock = float(boc_val) * float(current_t) + float(current_e)
+                total_peer_pice_to_purhcase = float(boc_val) * float(purchased_t) + float(purchased_e)
+                will_remian_by_pice = float(total_peer_pice_in_stock) + float(total_peer_pice_to_purhcase)
+                will_be_e = float(will_remian_by_pice % boc_val)
+                will_be_t = float(float((will_remian_by_pice - will_be_e)) / float(boc_val))
+                realProduct.quantity = float(will_be_t)
+                realProduct.extra_quantity = float(will_be_e)
             realProduct.save()
             resp = {"pk": invoice.pk}
         return JsonResponse(resp)

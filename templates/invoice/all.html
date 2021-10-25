@@ -8,24 +8,26 @@
             <th>Date</th>
             <th>Seller</th>
             <th>Discount</th>
-            <th>Payed</th>
-            <th>Dept</th>
+            {#            <th>Payed</th>#}
+            {#            <th>Dept</th>#}
             <th>Total</th>
+            <th>View</th>
         </tr>
         </thead>
         <tbody>
         {% for invoice in invoices %}
             <tr>
                 <th>{{ invoice.type }}</th>
-                <th>{{ invoice.date_published|date }}</th>
+                <th>{{ invoice.date_added|date }}</th>
                 <th>
                     <a class="link"
                        href="{% url 'invoice.seller.view' invoice.seller.pk %}">{{ invoice.seller.name }}</a>
                 </th>
                 <td>{{ invoice.discount }}{{ invoice.currency.name }}</td>
-                <th class="text-success">{{ invoice.payed }}{{ invoice.currency.name }}</th>
-                <th class="text-danger">{{ invoice.dept }}{{ invoice.currency.name }}</th>
+                {#                <th class="text-success">{{ invoice.payed }}{{ invoice.currency.name }}</th>#}
+                {#                <th class="text-danger">{{ invoice.dept }}{{ invoice.currency.name }}</th>#}
                 <th>{{ invoice.total }}{{ invoice.currency.name }}</th>
+                <th><a href="{% url 'invoice.view' invoice.pk %}">View</a></th>
             </tr>
         {% endfor %}
         </tbody>

@@ -35,12 +35,13 @@
                     All Sellers
                 </div>
                 <div class="card-body">
-                    <table class="table table-responsive-md table-striped">
+                    <table class="table table-responsive table-striped">
                         <thead>
                         <tr>
                             <th>Seller Name</th>
                             <th>Seller Phone</th>
                             <th>Seller Address</th>
+                            <th>Invoices</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -50,6 +51,7 @@
                                 <td>{{ seller.name }}</td>
                                 <td>{{ seller.phone }}</td>
                                 <td>{{ seller.address }}</td>
+                                <td><a href="{% url 'invoice.seller.view' seller.pk %}">Invoices</a></td>
                                 <td>
 {#                                    <button type="button" class="btn btn-danger btn-sm delete-btn" data-toggle="modal"#}
 {#                                            data-target="#deleteModal" data-id="{{ seller.id }}">#}
@@ -60,7 +62,6 @@
                                             data-phone="{{ seller.phone }}" data-name="{{ seller.name }}"
                                             data-address="{{ seller.address }}">
                                         Edit
-
                                     </button>
                                     <a class="btn btn-success btn-sm" href="{% url 'seller.add_payment' seller.pk %}">Add Payment</a>
                                 </td>
