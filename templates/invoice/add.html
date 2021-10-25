@@ -359,7 +359,7 @@
             methods: {
                 calc() {
                     if (this.activeProducts.length > 0) {
-                        var t = this.activeProducts.reduce((a, b) => +a + +((b.quantity * b.quantity_type.value) + b.extra_quantity * (b.price)), 0);
+                        var t = this.activeProducts.reduce((a, b) => +a + +((parseFloat(b.quantity * b.quantity_type.value)) + parseFloat(b.extra_quantity) * (parseFloat(b.price))), 0);
                         t = t * this.activeCurrency.fields.rate || 0
                         t -= this.discount
                         this.total = t
@@ -457,7 +457,7 @@
                 },
                 save(item, newquan) {
                     objIndex = this.activeProducts.findIndex((obj => obj.pk == item.pk));
-                    item.total = ((newquan * item.quantity_type.value) + item.extra_quantity) * (item.price)
+                    item.total = parseFloat((parseFloat(newquan) * parseFloat(item.quantity_type.value) + parseFloat(item.extra_quantity)) * (parseFloat(item.price)))
                     this.$set(this.activeProducts, objIndex, item)
 
                     this.snack = true
@@ -466,7 +466,7 @@
                 },
                 save2(item, newprice) {
                     objIndex = this.activeProducts.findIndex((obj => obj.pk == item.pk));
-                    item.total = ((item.quantity * item.quantity_type.value) + item.extra_quantity) * (newprice)
+                    item.total = parseFloat((parseFloat(item.quantity) * parseFloat(item.quantity_type.value) + parseFloat(item.extra_quantity)) * (parseFloat(newprice)))
                     this.$set(this.activeProducts, objIndex, item)
 
                     this.snack = true
@@ -475,9 +475,9 @@
                 },
 
                 save3(item, new_extra_quantity) {
-                    alert("Must be here")
                     objIndex = this.activeProducts.findIndex((obj => obj.pk == item.pk));
-                    item.total = ((item.quantity * item.quantity_type.value) + new_extra_quantity) * (item.price)
+                    item.total = parseFloat((parseFloat(item.quantity) * parseFloat(item.quantity_type.value) + parseFloat(new_extra_quantity)) * parseFloat(item.price))
+                    alert(item.total)
                     this.$set(this.activeProducts, objIndex, item)
 
                     this.snack = true
