@@ -69,7 +69,7 @@ class Product(models.Model):
     quantity_type = models.ForeignKey(QuantityType, on_delete=models.SET_NULL, null=True)
     quantity = models.FloatField()
     weight = models.CharField(max_length=100, choices=STATUS, default=STATUS.KG)
-    weight_value = models.IntegerField(default=0)
+    weight_value = models.FloatField(default=0)
     extra_quantity = models.FloatField(null=True, default=0)
     barcode = models.CharField(null=True, max_length=100, blank=False, default=" ")
     identifier = models.CharField(null=True, max_length=100, blank=False)
