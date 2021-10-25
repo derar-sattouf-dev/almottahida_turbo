@@ -122,6 +122,16 @@ def add_seller_payment(request, pk):
     form = InvoicePaymentForm(request.POST or None)
     if form.is_valid():
         form.save()
+        amount = form.cleaned_data["amount"]
+        op = form.cleaned_data["operation"]
+        currency = Currency.objects.get(name__exact=form.cleaned_data["currency"])
+        currency_value = currency.value
+        if op == "Add":
+            currency_value += amount
+        else:
+            currency_value -= amount
+        currency.value = currency_value
+        currency.save()
     invoices = Invoice.objects.filter(seller_id=pk)
     payments = InvoicePayment.objects.filter(seller_id=pk)
 
