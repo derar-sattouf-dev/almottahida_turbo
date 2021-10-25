@@ -359,7 +359,7 @@
             methods: {
                 calc() {
                     if (this.activeProducts.length > 0) {
-                        var t = this.activeProducts.reduce((a, b) => +a + +(b.price * b.quantity * b.quantity_type.value + (b.extra_quantity * b.price)), 0);
+                        var t = this.activeProducts.reduce((a, b) => +a + +((b.quantity * b.quantity_type.value) + b.extra_quantity  * (b.price)), 0);
                         t = t * this.activeCurrency.fields.rate || 0
                         t -= this.discount
                         this.total = t
