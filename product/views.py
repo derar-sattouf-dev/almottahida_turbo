@@ -127,9 +127,9 @@ def add_seller_payment(request, pk):
         currency = Currency.objects.get(name__exact=form.cleaned_data["currency"])
         currency_value = currency.value
         if op == "Add":
-            currency_value += amount
-        else:
             currency_value -= amount
+        else:
+            currency_value += amount
         currency.value = currency_value
         currency.save()
     invoices = Invoice.objects.filter(seller_id=pk)
