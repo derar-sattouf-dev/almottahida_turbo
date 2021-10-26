@@ -1,57 +1,55 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="row">
+<div class="row">
 
 
-        <div class="col-12">
-            <table class="table table-bordered">
-                <thead>
+    <div class="col-12">
+        <table class="table table-bordered" style="table-layout:fixed;width:100%;">
+            <thead>
                 <tr>
                     <th scope="col">Product</th>
-                    <th scope="col">Quantity Type</th>
                     <th scope="col">Quantity</th>
                     <th scope="col">Piece Price</th>
                     <th scope="col">Total</th>
                 </tr>
-                </thead>
-                <tbody>
+            </thead>
+            <tbody>
                 {% for product in products %}
-                    <tr>
-                        <td>{{ product.product.name }}</td>
-                        <td>{{ product.quantity_type.name }}</td>
-                        <td>{{ product.quantity }}</td>
-                        <td>{{ product.piece_price }}</td>
-                        <th scope="row">{{ product.total }}</th>
-                    </tr>
+                <tr>
+                    <td>{{ product.product.name }}</td>
+
+                    <td>{{ product.quantity }} <strong>({{ product.quantity_type.name}})</strong> </td>
+                    <td>{{ product.piece_price }}{{invoice.currency.name}}</td>
+                    <th scope="row">{{ product.total }}{{invoice.currency.name}}</th>
+                </tr>
                 {% endfor %}
 
 
-                </tbody>
-            </table>
-        </div>
-        <div class="col-12">
-            <table class="table table-bordered">
-                <thead>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-12">
+        <table class="table table-bordered" style="table-layout:fixed;width:100%;">
+            <thead>
                 <tr>
+                    <th scope="col">Date</th>
                     <th scope="col">Seller Name</th>
                     <th scope="col">Seller Phone</th>
-                    <th scope="col">Address</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Currency</th>
+                    <th scope="col">Discount</th>
                     <th scope="col">Total</th>
                 </tr>
-                </thead>
-                <tbody>
+            </thead>
+            <tbody>
                 <tr>
+                    <td>{{ invoice.date_added|date:"Y-m-d"  }}</td>
+
                     <td>{{ invoice.seller.name }}</td>
                     <td>{{ invoice.seller.phone }}</td>
-                    <td>{{ invoice.seller.address }}</td>
-                    <td>{{ invoice.date_added|date }}</td>
-                    <td>{{ invoice.currency.name }}</td>
-                    <td>{{ invoice.total }}{{ invoice.currency.name }} </td>
+                    <td>{{ invoice.discount }}{{ invoice.currency.name }}</td>
+                    <td> <strong>{{ invoice.total }}{{ invoice.currency.name }}</strong> </td>
                 </tr>
-                </tbody>
-            </table>
-        </div>
+            </tbody>
+        </table>
     </div>
+</div>
 {% endblock %}
