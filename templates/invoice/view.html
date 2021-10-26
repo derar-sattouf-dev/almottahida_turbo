@@ -19,7 +19,7 @@
                 <tr>
                     <td>{{ product.product.name }}</td>
 
-                    <td>{{ product.quantity }} <strong>({{ product.quantity_type.name}})</strong> </td>
+                    <td>{{ product.quantity }} <strong>{{ product.quantity_type.name}}</strong> </td>
                     <td>{{ product.piece_price }}{{invoice.currency.name}}</td>
                     <td>{{ product.extra_quantity }}</td>
                     <th scope="row">{{ product.total }}{{invoice.currency.name}}</th>
