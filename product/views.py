@@ -414,7 +414,7 @@ def all_products(request):
 def view_invoice(request, pk):
     invoice = Invoice.objects.get(pk=pk)
     products = InvoiceProduct.objects.filter(invoice_id=pk)
-    # invoice.total -= invoice.discount
+    invoice.total -= invoice.discount
     return render(request, "invoice/view.html", {"invoice": invoice, "products": products})
 
 
