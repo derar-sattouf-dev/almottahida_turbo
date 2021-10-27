@@ -18,6 +18,7 @@
                 {% for product in products %}
                 <tr>
                     <td>{{ product.product.name }}</td>
+
                     <td>{{ product.quantity }} <strong>{{ product.quantity_type.name}}</strong> </td>
                     <td>{{ product.piece_price }}{{invoice.currency.name}}</td>
                     <td>{{ product.extra_quantity }}</td>
@@ -42,7 +43,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>{{ invoice.date_added|date:"Y-m-d" }}</td>
+                    <td>{{ invoice.date_added|date:"Y-m-d"  }}</td>
 
                     <td>{{ invoice.seller.name }}</td>
                     <td>{{ invoice.seller.phone }}</td>

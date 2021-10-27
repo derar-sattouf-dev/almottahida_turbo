@@ -137,10 +137,11 @@ def add_seller_payment(request, pk):
 
     total_invoices = 0
     for invoice in invoices:
+        invoice.total -= invoice.discount
         if invoice.type == "Sale":
-            total_invoices += invoice.total / invoice.currency.rate
+            total_invoices += (invoice.total - invoice.discount) / invoice.currency.rate
         else:
-            total_invoices -= invoice.total / invoice.currency.rate
+            total_invoices -= (invoice.total - invoice.discount) / invoice.currency.rate
 
     total_payments = 0
     for payment in payments:
