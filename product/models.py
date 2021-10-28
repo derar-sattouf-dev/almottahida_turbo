@@ -41,8 +41,7 @@ class Seller(models.Model):
     name = models.CharField(max_length=100, unique=True)
     phone = models.CharField(max_length=200, null=True, unique=True, blank=False)
     address = models.CharField(max_length=200, null=True, blank=False)
-    for_him = models.FloatField(default=0, blank=True)
-    on_him = models.FloatField(default=0, blank=True)
+    old_account = models.FloatField(default=0, blank=True)
 
     def __str__(self):
         return self.name

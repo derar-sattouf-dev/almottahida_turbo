@@ -27,6 +27,7 @@
                             <tr>
                                 <th>Type</th>
                                 <th>Total</th>
+                                <th>Discount</th>
                                 <th>Date</th>
                             </tr>
                             </thead>
@@ -35,7 +36,8 @@
                                 <tr>
                                     <td>Invoice({{ invoice.type }})</td>
                                     <td>{{ invoice.total }}{{ invoice.currency.name }}</td>
-                                    <td>{{ invoice.date_added|date }}</td>
+                                    <td>{{ invoice.discount }}{{ invoice.currency.name }}</td>
+                                    <td>{{ invoice.date_added|date:"Y-m-d" }}</td>
                                 </tr>
                             {% endfor %}
                             {% for payment in payments %}
@@ -52,15 +54,15 @@
                 <table class="table">
                 <thead>
                 <tr>
-                    <th>Total Invoices Totals</th>
-                    <th>Total Payment Totals</th>
+                    <th></th>
+                    <th>Old Account</th>
                     <th>Total</th>
                 </tr>
                 </thead>
                     <tbody>
                     <tr>
-                        <th>{{ total_invoices }}</th>
-                        <th>{{ total_payments }}</th>
+                        <th></th>
+                        <th>{{ seller.old_account }}</th>
                         <th>{{ total }}</th>
                     </tr>
                     </tbody>
