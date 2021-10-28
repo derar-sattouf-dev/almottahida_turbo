@@ -106,7 +106,7 @@ def all_sellers(request):
 
     sellers = Seller.objects.all()
     page = request.GET.get('page', 1)
-    paginator = Paginator(sellers, 15)
+    paginator = Paginator(sellers, 100)
     try:
         sellers = paginator.page(page)
     except PageNotAnInteger:
