@@ -15,10 +15,10 @@ class SellerForm(ModelForm):
         model = Seller
         fields = "__all__"
 
-    def __init__(self, *args, **kwargs):
-        super(SellerForm, self).__init__(*args, **kwargs)
-        # super().__init__()
-        self.fields['old_account'].widget = HiddenInput()
+    # def __init__(self, *args, **kwargs):
+    #     super(SellerForm, self).__init__(*args, **kwargs)
+    #     # super().__init__()
+    #     # self.fields['old_account'].widget = HiddenInput()
 
 
 class InvoicePaymentForm(ModelForm):
