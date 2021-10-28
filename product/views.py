@@ -426,7 +426,7 @@ def add_invoice(request):
         # type
         invoice.type = data["activeType"]
         # Rate
-        invoice.rate = data["rate"]
+        # invoice.rate = data["rate"]
         se = Seller.objects.get(pk=data["activeSeller"])
         invoice.seller = se
         # worker
