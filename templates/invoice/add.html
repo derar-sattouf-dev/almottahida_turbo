@@ -192,15 +192,7 @@
                                                     outlined
                                             ></v-select>
                                         </v-col>
-                                        <v-col cols="3">
-                                            <v-combobox
-                                                    v-model="activeCurrency"
-                                                    :items="currencies"
-                                                    label="Currency"
-                                                    item-text="fields.name"
-                                                    outlined
-                                            ></v-combobox>
-                                        </v-col>
+
                                         <v-col cols="3">
                                             <v-combobox
                                                     v-model="activeSeller"
@@ -219,16 +211,7 @@
                                                     item-text="fields.name"
                                             ></v-combobox>
                                         </v-col>
-                                        <v-col cols="3">
-                                            <v-text-field
-                                                    v-model="discount"
-                                                    type="number"
-                                                    label="Discount amount"
-                                                    outlined
-                                                    :suffix="activeCurrency.fields?.name"
-                                            >
-                                            </v-text-field>
-                                        </v-col>
+
                                         <v-col cols="3">
                                             <v-text-field
                                                     type="number"
@@ -236,7 +219,7 @@
                                                     outlined
                                                     disabled
                                                     v-model="total"
-                                                    :suffix="activeCurrency.fields?.name"
+                                                    :suffix="$"
 
                                             >
                                             </v-text-field>
@@ -286,9 +269,7 @@
                 discount: function (old) {
                     this.calc()
                 },
-                activeCurrency: function (old) {
-                    this.calc()
-                },
+
 
             },
             el: '#app',
@@ -298,8 +279,6 @@
                 finalData: {},
                 total: 0,
                 discount: 0,
-                currencies: [],
-                activeCurrency: "",
                 sellers: [],
                 workers: [],
                 activeSeller: "",
@@ -360,24 +339,12 @@
                 calc() {
                     if (this.activeProducts.length > 0) {
                         var t = this.activeProducts.reduce((a, b) => +a + +((parseFloat(b.quantity * b.quantity_type.value) + parseFloat(b.extra_quantity)) * (parseFloat(b.price))), 0);
-                        t = t * this.activeCurrency.fields.rate || 0
                         t -= this.discount
                         this.total = t
                     }
                 },
                 prepare() {
-                    axios({
-                        method: "get",
-                        url: "{% url 'product.get_currencies' %}",
-                        headers: {"X-CSRFToken": '{{csrf_token}}'}
-                    }).then((r) => {
-                        var r = JSON.parse(r.data.result)
-                        for (let i = 0; i < r.length; i++) {
-                            r[i]["fields"]["pk"] = r[i]["pk"]
-                        }
-                        this.currencies = r
-                        this.activeCurrency = r[0]
-                    })
+
                     axios({
                         method: "get",
                         url: "{% url 'product.get_sellers' %}",
@@ -425,7 +392,7 @@
                             p["quantity_type"] = this.quantity_types[i]["fields"]
                         }
                     }
-                    p["total"] = p.price * p.quantity_type.value * this.activeCurrency["fields"]["rate"]
+                    p["total"] = p.price * p.quantity_type.value
                     this.activeProducts.push(p)
                 },
                 searchProducts() {
@@ -489,7 +456,6 @@
                     this.finalData = {
                         total: this.total,
                         discount: this.discount,
-                        activeCurrency: this.activeCurrency.pk,
                         activeSeller: this.activeSeller.pk,
                         activeWorker: this.activeWorker.pk,
                         activeProducts: this.activeProducts,

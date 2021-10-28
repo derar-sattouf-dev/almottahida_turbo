@@ -13,6 +13,7 @@ urlpatterns = [
     path("material/", views.all_materials, name='material.all'),
     path("invoice/add", views.add_invoice, name='invoice.add'),
     path("invoice/<int:pk>/", views.view_invoice, name='invoice.view'),
+    path("invoice/<int:pk>/edit", views.edit_invoice, name='invoice.edit'),
     path("invoice/seller/<int:pk>/", views.seller_invoices, name='invoice.seller.view'),
     path("invoice/last", views.view_invoice_last, name='invoice.view.last'),
     path("invoice/all", views.all_invoices, name='invoice.all'),

@@ -1,31 +1,51 @@
 {% extends "base.html" %}
 
 {% block content %}
-<table class="table table-striped" style="table-layout:fixed;width:100%;">
-    <thead>
+    <table class="table table-striped" style="table-layout:fixed;width:100%;">
+        <thead>
         <tr>
+            <th>ID</th>
             <th>Type</th>
             <th>Date</th>
             <th>Seller</th>
             <th>Discount</th>
             <th>Total</th>
             <th>View</th>
+            <th>Edit</th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         {% for invoice in invoices %}
-        <tr>
-            <th>{{ invoice.type }}</th>
-            <th>{{ invoice.date_added|date:"Y-m-d" }}</th>
-            <th>
-                <a class="link" href="{% url 'invoice.seller.view' invoice.seller.pk %}">{{ invoice.seller.name }}</a>
-            </th>
-            <td>{{ invoice.discount }}{{ invoice.currency.name }}</td>
-            <th>{{ invoice.total }}{{ invoice.currency.name }}</th>
-            <th><a href="{% url 'invoice.view' invoice.pk %}">View</a></th>
-        </tr>
+            <tr>
+                <th>#{{ invoice.pk }}</th>
+                <th>{{ invoice.type }}</th>
+                <th>{{ invoice.date_added|date:"Y-m-d" }}</th>
+                <th>
+                    <a class="link"
+                       href="{% url 'invoice.seller.view' invoice.seller.pk %}">{{ invoice.seller.name }}</a>
+                </th>
+                <td>
+                    <button type="button"  onclick="$('#activeimage').attr('src','{{ invoice.image }}')" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                        {{ invoice.discount }}
+                    </button>
+                </td>
+                <th>{{ invoice.total }}{{ invoice.currency.name }}</th>
+                <th><a href="{% url 'invoice.view' invoice.pk %}">View</a></th>
+                {% if invoice.discount == 0 %}
+                    <th><a href="{% url 'invoice.edit' invoice.pk %}">Edit</a></th>
+                {% endif %}
+            </tr>
         {% endfor %}
-    </tbody>
-</table>
+        </tbody>
+    </table>
 
+    <div class="modal fade modal-xl" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img id="activeimage" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

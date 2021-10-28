@@ -138,9 +138,9 @@ def add_seller_payment(request, pk):
     total_invoices = 0
     for invoice in invoices:
         if invoice.type == "Sale":
-            total_invoices += (invoice.total - invoice.discount) / invoice.currency.rate
+            total_invoices += (invoice.total - invoice.discount)
         else:
-            total_invoices -= (invoice.total - invoice.discount) / invoice.currency.rate
+            total_invoices -= (invoice.total - invoice.discount)
 
     total_payments = 0
     for payment in payments:
@@ -425,12 +425,8 @@ def add_invoice(request):
         invoice = Invoice()
         # type
         invoice.type = data["activeType"]
-        # # currency
-        cur = Currency.objects.get(pk=data["activeCurrency"])
-        invoice.currency = cur
-        # cur.value = cur.value + float(data["payed"])
-        # cur.save()
-        # seller
+        # Rate
+        invoice.rate = data["rate"]
         se = Seller.objects.get(pk=data["activeSeller"])
         invoice.seller = se
         # worker
@@ -440,10 +436,6 @@ def add_invoice(request):
         invoice.discount = data["discount"]
         invoice.payed = 0
         invoice.remaining = data["total"]
-        # invoice.dept = data["dept"]
-        # invoice.payed = data["payed"]
-        # invoice.paydate = data["paydate"]
-        # invoice.expected_earn = Currency.objects.get(pk=data["activeCurrency"])
         invoice.save()
         for product in data["activeProducts"]:
             invoiceProduct = InvoiceProduct()
@@ -576,3 +568,12 @@ def rawad(request):
 def show(request):
     products = Product.objects.all()
     return render(request, "product/show.html", {"products": products})
+
+
+@login_required(login_url=LOGIN_URL)
+def edit_invoice(request, pk):
+    invoice = Invoice.objects.get(pk=pk)
+    form = InvoiceForm(request.POST or None, instance=invoice)
+    if form.is_valid():
+        form.save()
+    return render(request, 'invoice/edit.html', {"form": form, "invoice": invoice})

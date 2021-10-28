@@ -61,3 +61,9 @@ class ProductForm(ModelForm):
     class Meta:
         model = Product
         fields = "__all__"
+
+
+class InvoiceForm(ModelForm):
+    class Meta:
+        model = Invoice
+        fields = ["discount", "discount_reason", "image"]

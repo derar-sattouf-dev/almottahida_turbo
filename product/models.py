@@ -84,15 +84,17 @@ class Invoice(models.Model):
     TYPE = Choices('Sale', 'Purchase')
     type = models.CharField(max_length=100, choices=TYPE, default=TYPE.Sale)
     discount = models.FloatField()
+    discount_reason = models.CharField(max_length=300, default=" ")
     payed = models.FloatField()
     expected_earn = models.FloatField(blank=True, null=True)
     earn = models.FloatField(blank=True, null=True)
     total = models.FloatField()
     remaining = models.FloatField()
     date_added = models.DateTimeField(auto_now_add=True)
-    currency = models.ForeignKey(Currency, on_delete=models.SET_NULL, null=True)
     seller = models.ForeignKey(Seller, on_delete=models.SET_NULL, null=True)
     worker = models.ForeignKey(Worker, on_delete=models.SET_NULL, null=True)
+    rate = models.FloatField(default=1)
+    image = models.CharField(max_length=100, blank=False, null=True)
 
 
 class InvoiceProduct(models.Model):
@@ -113,6 +115,7 @@ class InvoicePayment(models.Model):
     amount = models.FloatField()
     OPERATIONS = Choices('Give', 'Take')
     operation = models.CharField(choices=OPERATIONS, max_length=5, default=OPERATIONS.Give)
+    image = models.CharField(max_length=100, blank=False, null=True)
 
 
 class DailyBoxOperation(models.Model):

@@ -12,6 +12,9 @@
                     <form method="post" action="{% url 'seller.add_payment' seller.pk %}">
                         {% csrf_token %}
                         {{ form|crispy }}
+                        <label for="formFile" class="form-label">Payment image</label>
+                        <input class="form-control" type="file" id="image">
+                        <br>
                         <button type="submit" class="btn btn-success">Add Payment</button>
                     </form>
                 </div>
@@ -24,29 +27,32 @@
                     <table class="table table-striped">
                         <thead>
                         <tr>
-                            <th style="width:10%">Type</th>
-                            <th style="width:10%">Total</th>
-                            <th style="width:10%">Currency Rate</th>
-                            <th style="width:10%">Discount</th>
-                            <th style="width:10%">Date</th>
+                            <th>ID</th>
+                            <th>Type</th>
+                            <th>Total</th>
+                            <th>Currency Rate</th>
+                            <th>Discount</th>
+                            <th>Date</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for invoice in invoices %}
                             <tr>
+                                <td><a href="{% url 'invoice.view' invoice.pk %}">#{{ invoice.pk }}</a></td>
                                 <td>Invoice({{ invoice.type }})</td>
                                 <td>{{ invoice.total }}{{ invoice.currency.name }}</td>
-                                <td>{{ invoice.currency.rate }}</td>
+                                <td>---</td>
                                 <td>{{ invoice.discount }}{{ invoice.currency.name }}</td>
                                 <td>{{ invoice.date_added|date:"Y-m-d" }}</td>
                             </tr>
                         {% endfor %}
                         {% for payment in payments %}
                             <tr>
+                                <td>---</td>
                                 <td>Payment ({{ payment.operation }})</td>
                                 <td>{{ payment.amount }}{{ payment.currency.name }}</td>
                                 <td>{{ payment.rate }}</td>
-                                <td>-----</td>
+                                <td>---</td>
                                 <td>{{ payment.add_date|date:"Y-m-d" }}</td>
                             </tr>
                         {% endfor %}
@@ -72,5 +78,48 @@
             </table>
         </div>
     </div>
+    <style>
+        #div_id_image {
+            display: none;
+        }
+    </style>
+    <script>
+        $('document').ready(function () {
+            $('#image').on('change', function () {
+                var $files = $(this).get(0).files;
 
+                if ($files.length) {
+                    // Reject big files
+                    if ($files[0].size > $(this).data('max-size') * 1024) {
+                        console.log('Please select a smaller file');
+                        return false;
+                    }
+                    console.log('Uploading file to Imgur..');
+                    var apiUrl = 'https://api.imgur.com/3/image';
+                    var apiKey = 'de1f436286677e8';
+                    var settings = {
+                        async: false,
+                        crossDomain: true,
+                        processData: false,
+                        contentType: false,
+                        type: 'POST',
+                        url: apiUrl,
+                        headers: {
+                            Authorization: 'Client-ID ' + apiKey,
+                            Accept: 'application/json',
+                        },
+                        mimeType: 'multipart/form-data',
+                    };
+
+                    var formData = new FormData();
+                    formData.append('image', $files[0]);
+                    settings.data = formData;
+                    $.ajax(settings).done(function (response) {
+                        $("#id_image").val(JSON.parse(response).data["link"])
+                        alert("Image uploaded successfully")
+                    });
+                }
+            });
+        });
+    </script>
 {% endblock %}
