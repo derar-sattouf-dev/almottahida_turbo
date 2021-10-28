@@ -145,9 +145,9 @@ def add_seller_payment(request, pk):
     total_payments = 0
     for payment in payments:
         if payment.operation == "Give":
-            total_payments -= payment.amount / payment.currency.rate
+            total_payments -= payment.amount / payment.rate
         else:
-            total_payments += payment.amount / payment.currency.rate
+            total_payments += payment.amount / payment.rate
     seller = Seller.objects.get(pk=pk)
     total = total_invoices - total_payments + seller.old_account
     return render(request, "seller/add_payment.html",

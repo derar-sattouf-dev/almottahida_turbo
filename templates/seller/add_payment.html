@@ -27,6 +27,7 @@
                             <tr>
                                 <th>Type</th>
                                 <th>Total</th>
+                                <th>Currency Rate</th>
                                 <th>Discount</th>
                                 <th>Date</th>
                             </tr>
@@ -36,6 +37,7 @@
                                 <tr>
                                     <td>Invoice({{ invoice.type }})</td>
                                     <td>{{ invoice.total }}{{ invoice.currency.name }}</td>
+                                    <td>{{ invoice.currency.rate }}</td>
                                     <td>{{ invoice.discount }}{{ invoice.currency.name }}</td>
                                     <td>{{ invoice.date_added|date:"Y-m-d" }}</td>
                                 </tr>
@@ -44,7 +46,9 @@
                                 <tr>
                                     <td>Payment ({{ payment.operation }})</td>
                                     <td>{{ payment.amount }}{{ payment.currency.name }}</td>
-                                    <td>{{ payment.add_date|date }}</td>
+                                    <td>{{ payment.rate}}</td>
+                                    <td>-----</td>
+                                    <td>{{ payment.add_date|date:"Y-m-d" }}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>

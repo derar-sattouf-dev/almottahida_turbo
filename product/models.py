@@ -109,6 +109,7 @@ class InvoicePayment(models.Model):
     seller = models.ForeignKey(Seller, on_delete=models.CASCADE, )
     currency = models.ForeignKey(Currency, on_delete=models.CASCADE, )
     add_date = models.DateTimeField(auto_now_add=True)
+    rate = models.FloatField(default=1)
     amount = models.FloatField()
     OPERATIONS = Choices('Give', 'Take')
     operation = models.CharField(choices=OPERATIONS, max_length=5, default=OPERATIONS.Give)
