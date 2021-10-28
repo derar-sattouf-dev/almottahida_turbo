@@ -542,7 +542,7 @@ def view_invoice_last(request):
 
 @login_required(login_url=LOGIN_URL)
 def all_invoices(request):
-    invoices = Invoice.objects.all()
+    invoices = Invoice.objects.all().order_by("-pk")
     return render(request, "invoice/all.html", {"invoices": invoices})
 
 
