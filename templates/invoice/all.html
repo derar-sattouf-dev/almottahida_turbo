@@ -16,7 +16,7 @@
         {% for invoice in invoices %}
         <tr>
             <th>{{ invoice.type }}</th>
-            <th>{{ invoice.date_added|date }}</th>
+            <th>{{ invoice.date_added|date:"Y-m-d" }}</th>
             <th>
                 <a class="link" href="{% url 'invoice.seller.view' invoice.seller.pk %}">{{ invoice.seller.name }}</a>
             </th>
