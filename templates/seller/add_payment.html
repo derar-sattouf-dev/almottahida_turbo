@@ -3,10 +3,10 @@
 
 {% block content %}
     <div class="row">
-        <div class="col-4">
+        <div class="col-3">
             <div class="card">
                 <div class="card-header">
-                    Add Payment From Seller
+                    Add Payment
                 </div>
                 <div class="card-body">
                     <form method="post" action="{% url 'seller.add_payment' seller.pk %}">
@@ -17,45 +17,44 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">History</div>
-                    <div class="card-body">
-                        <table class="table table-striped">
-                            <thead>
+        <div class="col-9">
+            <div class="card">
+                <div class="card-header">History</div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th style="width:10%">Type</th>
+                            <th style="width:10%">Total</th>
+                            <th style="width:10%">Currency Rate</th>
+                            <th style="width:10%">Discount</th>
+                            <th style="width:10%">Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for invoice in invoices %}
                             <tr>
-                                <th>Type</th>
-                                <th>Total</th>
-                                <th>Currency Rate</th>
-                                <th>Discount</th>
-                                <th>Date</th>
+                                <td>Invoice({{ invoice.type }})</td>
+                                <td>{{ invoice.total }}{{ invoice.currency.name }}</td>
+                                <td>{{ invoice.currency.rate }}</td>
+                                <td>{{ invoice.discount }}{{ invoice.currency.name }}</td>
+                                <td>{{ invoice.date_added|date:"Y-m-d" }}</td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            {% for invoice in invoices %}
-                                <tr>
-                                    <td>Invoice({{ invoice.type }})</td>
-                                    <td>{{ invoice.total }}{{ invoice.currency.name }}</td>
-                                    <td>{{ invoice.currency.rate }}</td>
-                                    <td>{{ invoice.discount }}{{ invoice.currency.name }}</td>
-                                    <td>{{ invoice.date_added|date:"Y-m-d" }}</td>
-                                </tr>
-                            {% endfor %}
-                            {% for payment in payments %}
-                                <tr>
-                                    <td>Payment ({{ payment.operation }})</td>
-                                    <td>{{ payment.amount }}{{ payment.currency.name }}</td>
-                                    <td>{{ payment.rate}}</td>
-                                    <td>-----</td>
-                                    <td>{{ payment.add_date|date:"Y-m-d" }}</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                        {% endfor %}
+                        {% for payment in payments %}
+                            <tr>
+                                <td>Payment ({{ payment.operation }})</td>
+                                <td>{{ payment.amount }}{{ payment.currency.name }}</td>
+                                <td>{{ payment.rate }}</td>
+                                <td>-----</td>
+                                <td>{{ payment.add_date|date:"Y-m-d" }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                <table class="table">
+            </div>
+            <table class="table">
                 <thead>
                 <tr>
                     <th></th>
@@ -63,18 +62,15 @@
                     <th>Total</th>
                 </tr>
                 </thead>
-                    <tbody>
-                    <tr>
-                        <th></th>
-                        <th>{{ seller.old_account }}</th>
-                        <th>{{ total }}</th>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
+                <tbody>
+                <tr>
+                    <th></th>
+                    <th>{{ seller.old_account }}</th>
+                    <th>{{ total }}</th>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-    <style>
-    </style>
+
 {% endblock %}
