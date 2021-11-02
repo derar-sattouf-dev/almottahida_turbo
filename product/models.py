@@ -102,6 +102,7 @@ class InvoiceProduct(models.Model):
     piece_price = models.FloatField()
     total = models.FloatField()
     total_pices = models.FloatField(default=0)
+    total_pices_count = models.FloatField(default=0)
 
 
 class InvoicePayment(models.Model):
