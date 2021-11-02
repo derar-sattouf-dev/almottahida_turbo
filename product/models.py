@@ -101,6 +101,7 @@ class InvoiceProduct(models.Model):
     quantity_type = models.ForeignKey(QuantityType, on_delete=models.CASCADE, )
     piece_price = models.FloatField()
     total = models.FloatField()
+    total_pices = models.FloatField(default=0)
 
 
 class InvoicePayment(models.Model):

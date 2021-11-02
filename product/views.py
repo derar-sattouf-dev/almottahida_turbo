@@ -420,6 +420,9 @@ def all_products(request):
 def view_invoice(request, pk):
     invoice = Invoice.objects.get(pk=pk)
     products = InvoiceProduct.objects.filter(invoice_id=pk)
+    for p in products:
+        p.total_pices = str(float(float(p.quantity * p.quantity_type.value) + float(
+            p.extra_quantity)) * p.product.weight_value) + p.product.weight
     invoice.total -= invoice.discount
     return render(request, "invoice/view.html", {"invoice": invoice, "products": products})
 

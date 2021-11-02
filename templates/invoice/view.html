@@ -8,8 +8,8 @@
                 <thead>
                 <tr>
                     <th scope="col">Product</th>
-                    <th scope="col">Quantity</th>
                     <th scope="col">Unit</th>
+                    <th scope="col">Quantity</th>
                     <th scope="col">Quantity Type</th>
                     <th scope="col">Extra Quantity</th>
                     <th scope="col">Total Quantity</th>
@@ -21,11 +21,11 @@
                 {% for product in products %}
                     <tr>
                         <td>{{ product.product.name }}</td>
-                        <td>{{ product.quantity }} </td>
                         <td>{{ product.product.weight }} </td>
+                        <td>{{ product.quantity }} </td>
                         <td><strong>{{ product.quantity_type.name }}</strong></td>
                         <td>{{ product.extra_quantity }} Piece</td>
-                        <td>{% widthratio product.quantity_type.value 1 product.quantity %}</td>
+                        <td>{{ product.total_pices }}</td>
                         <td>{{ product.piece_price }}</td>
                         <th scope="row">{{ product.total }}{{ invoice.currency.name }}</th>
                     </tr>
