@@ -32,7 +32,12 @@
         <div class="col-12 col-md-8 ">
             <div class="card">
                 <div class="card-header">
-                    All Sellers
+                    <span>All Sellers</span>
+                    <form method="get" action="" style="margin-top:10px">
+                        <div class="mx-4">
+                            <input class="form-control" name="search" placeholder="Search Sellers">
+                        </div>
+                    </form>
                 </div>
                 <div class="card-body">
                     <table class="table table-responsive table-striped">
@@ -53,17 +58,18 @@
                                 <td>{{ seller.address }}</td>
                                 <td><a href="{% url 'invoice.seller.view' seller.pk %}">Invoices</a></td>
                                 <td>
-{#                                    <button type="button" class="btn btn-danger btn-sm delete-btn" data-toggle="modal"#}
-{#                                            data-target="#deleteModal" data-id="{{ seller.id }}">#}
-{#                                        Delete#}
-{#                                    </button>#}
+                                    {#                                    <button type="button" class="btn btn-danger btn-sm delete-btn" data-toggle="modal"#}
+                                    {#                                            data-target="#deleteModal" data-id="{{ seller.id }}">#}
+                                    {#                                        Delete#}
+                                    {#                                    </button>#}
                                     <button type="button" class="btn btn-primary btn-sm edit-btn" data-toggle="modal"
                                             data-target="#updateModal" data-id="{{ seller.id }}"
                                             data-phone="{{ seller.phone }}" data-name="{{ seller.name }}"
                                             data-address="{{ seller.address }}">
                                         Edit
                                     </button>
-                                    <a class="btn btn-success btn-sm" href="{% url 'seller.add_payment' seller.pk %}">Add Payment</a>
+                                    <a class="btn btn-success btn-sm" href="{% url 'seller.add_payment' seller.pk %}">Add
+                                        Payment</a>
                                 </td>
                             </tr>
                         {% endfor %}

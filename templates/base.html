@@ -11,20 +11,19 @@
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"/>
     <title>ALMOTTAHIDA</title>
     <style>
         .container {
             width: 98%;
             max-width: 1440px;
         }
+
         {##}
         {#td, th {#}
         {#    min-width: 200px;#}
         {#    text-align: center;#}
-        {#}#}
+        {
+        #}#}
     </style>
 </head>
 <body>
@@ -75,6 +74,7 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{% url 'invoice.all' %}">All Invoices</a>
                             <a class="dropdown-item" href="{% url 'invoice.add' %}">Add Invoice</a>
+                            <a class="dropdown-item" href="{% url 'invoice.returned' %}">Returned Invoices</a>
                             <a class="dropdown-item" href="{% url 'box.daily' %}">Account</a>
                         </div>
                     </li>

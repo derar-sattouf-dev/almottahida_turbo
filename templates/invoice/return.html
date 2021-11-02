@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+{% block content %}
+    <div id="app">
+        <v-app>
+            <v-card v-if="loading"
+                    class="d-flex align-center justify-center" elevation="0" min-height="500">
+                <v-progress-circular
+                        :size="70"
+                        :width="7"
+                        color="blue"
+                        indeterminate
+                ></v-progress-circular>
+            </v-card>
+
+            <div v-if="!loading">
+                <v-data-table
+                        v-if="products.length > 0"
+                        :items="products"
+                        :headers="headers"
+                >
+                    {#Top Headers#}
+                    <template v-slot:top>
+                        <v-toolbar flat>
+                            <v-toolbar-title class="mb-4"><p>Advanced Update Invoice Products</p>
+                                <p class="text-danger">Set Returned Quantity For Each Product </p></v-toolbar-title>
+                            <v-spacer></v-spacer>
+
+                            <v-dialog
+                                    v-model="saveDialog"
+                                    max-width="500px"
+                            >
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                            color="red"
+                                            dark
+                                            class="mb-2"
+                                            v-bind="attrs"
+                                            v-on="on"
+                                    >
+                                        Save Invoice Data
+                                    </v-btn>
+                                </template>
+
+                                <v-card>
+                                    <v-card-title>
+                                        <span class="text-h5">Are You Sure You Want To Update Invoice Data </span>
+                                    </v-card-title>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn dark color="red darken-1 mb-2" @click="save()">
+                                            Yes Return This Products
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                        </v-toolbar>
+                    </template>
+                    {#End Top Headers#}
+                    {#Update Quantity#}
+                    <template v-slot:item.quantity="props">
+                        <v-edit-dialog
+                                :return-value.sync="props.item.quantity"
+                                @save="updateQuantity(props.item,props.item.quantity)"
+                        >
+                            [[props.item.quantity]]
+                            <template v-slot:input>
+                                <v-text-field
+                                        v-model="props.item.quantity"
+                                        label="Edit"
+                                        single-line
+                                ></v-text-field>
+                            </template>
+                        </v-edit-dialog>
+                    </template>
+                    <template v-slot:item.extra_quantity="props">
+                        <v-edit-dialog
+                                :return-value.sync="props.item.extra_quantity"
+                                @save="updateExtraQuantity(props.item,props.item.extra_quantity)"
+                        >
+                            [[props.item.extra_quantity]]
+                            <template v-slot:input>
+                                <v-text-field
+                                        v-model="props.item.extra_quantity"
+                                        label="Edit"
+                                        single-line
+                                ></v-text-field>
+                            </template>
+                        </v-edit-dialog>
+                    </template>
+                    <template v-slot:item.piece_price="props">
+                        <v-edit-dialog
+                                :return-value.sync="props.item.piece_price"
+                                @save="updatePrice(props.item,props.item.piece_price)"
+                        >
+                            [[props.item.piece_price]]
+                            <template v-slot:input>
+                                <v-text-field
+                                        v-model="props.item.piece_price"
+                                        label="Edit"
+                                        single-line
+                                ></v-text-field>
+                            </template>
+                        </v-edit-dialog>
+                    </template>
+
+                </v-data-table>
+                <v-row>
+                    <v-col cols="3">
+                    </v-col>
+                </v-row>
+            </div>
+        </v-app>
+    </div>
+    <script>
+        new Vue({
+            vuetify: new Vuetify(),
+            delimiters: ["[[", "]]"],
+            el: "#app",
+            mounted() {
+                this.init()
+            },
+            data: () => {
+                return {
+                    saveDialog: true,
+                    loading: false,
+                    quantity_types: [],
+                    headers: [
+                        {
+                            text: 'Product ID',
+                            sortable: false,
+                            value: 'parentName',
+                        },
+                        {
+                            text: 'Quantity Returned',
+                            sortable: true,
+                            value: 'quantity',
+                        },
+                        {
+                            text: 'Extra Quantity Returned',
+                            sortable: true,
+                            value: 'extra_quantity',
+                        },
+                        {
+                            text: 'Piece Price',
+                            sortable: true,
+                            value: 'piece_price',
+                        },
+                        {
+                            text: 'Total',
+                            sortable: true,
+                            value: 'total',
+                        },
+                    ],
+                    products: [],
+                    total:{{ invoice.total }},
+                    finalData: {
+                        seller: "{{ invoice.seller.pk }}",
+                        worker: "{{ invoice.worker.pk }}"
+                    },
+
+                }
+            },
+            methods: {
+                calc() {
+                    if (this.products.length > 0) {
+                        var t = this.products.reduce((a, b) => +a + +((parseFloat(b.quantity * b.quantityTypeValue) + parseFloat(b.extra_quantity)) * (parseFloat(b.piece_price))), 0);
+                        this.total = t
+                    }
+                },
+                updateQuantity(item, newQuantity) {
+                    objIndex = this.products.findIndex((obj => obj.pk == item.pk));
+                    item.total = parseFloat((parseFloat(newQuantity) * parseFloat(item.quantityTypeValue) + parseFloat(item.extra_quantity)) * (parseFloat(item.piece_price)))
+                    this.$set(this.products, objIndex, item)
+                    this.calc()
+                },
+                updateExtraQuantity(item, newExtraQuantity) {
+                    objIndex = this.products.findIndex((obj => obj.pk == item.pk));
+                    item.total = parseFloat((parseFloat(item.quantity) * parseFloat(item.quantityTypeValue) + parseFloat(newExtraQuantity)) * (parseFloat(item.piece_price)))
+                    this.$set(this.products, objIndex, item)
+                    this.calc()
+                },
+                updatePrice(item, newPrice) {
+                    objIndex = this.products.findIndex((obj => obj.pk == item.pk));
+                    item.total = parseFloat((parseFloat(item.quantity) * parseFloat(item.quantityTypeValue) + parseFloat(item.extra_quantity)) * (parseFloat(newPrice)))
+                    this.$set(this.products, objIndex, item)
+                    this.calc()
+                },
+                init() {
+                    this.loading = true;
+                    axios({
+                        method: "get",
+                        url: "{% url 'product.get_quantity_types' %}",
+                        headers: {"X-CSRFToken": '{{csrf_token}}'}
+                    }).then((res) => {
+                        const data = JSON.parse(res.data.result)
+                        this.quantity_types = data
+                        axios({
+                            method: "get",
+                            url: "{% url 'product.get_invoice_products' invoice.pk %}",
+                            headers: {"X-CSRFToken": '{{csrf_token}}'}
+                        }).then((res) => {
+                            const data = JSON.parse(res.data["invoice_products"])
+                            const productsData = JSON.parse(res.data["products"])
+                            let p = [];
+                            for (let product in data) {
+                                product = data[product]
+                                product["fields"]["pk"] = product["pk"]
+                                product = product["fields"]
+                                product["quantity"] = 0
+                                product["total"] = 0
+                                for (let productsDataKey in productsData) {
+                                    if (productsData[productsDataKey]["pk"] === product["product"]) {
+                                        product["parentName"] = productsData[productsDataKey]["fields"]["name"]
+                                    }
+                                }
+                                for (let index in this.quantity_types) {
+                                    if (this.quantity_types[index]["pk"] === product["quantity_type"]) {
+                                        product["quantityTypeValue"] = this.quantity_types[index]["fields"]["value"]
+                                    }
+                                }
+                                p.push(product)
+                            }
+                            this.products = p
+                            this.loading = false;
+                        })
+                    })
+                },
+                save() {
+                    this.loading = true
+                    this.finalData["products"] = this.products
+                    var data = JSON.stringify(this.finalData)
+                    var form = new FormData()
+                    form.append("data", data)
+                    axios({
+                        method: "post",
+                        url: "{% url 'invoice.return' invoice.pk %}",
+                        data: form,
+                        headers: {"X-CSRFToken": '{{csrf_token}}'}
+                    }).then((r) => {
+                        window.location.href = "{% url 'invoice.view.last' %}"
+                    })
+                }
+            }
+        })
+    </script>
+{% endblock %}

@@ -1,38 +1,43 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="row">
+    <div class="row">
 
 
-    <div class="col-12">
-        <table class="table table-bordered" style="table-layout:fixed;width:100%;">
-            <thead>
+        <div class="col-12">
+            <table class="table table-bordered" style="table-layout:fixed;width:100%;">
+                <thead>
                 <tr>
                     <th scope="col">Product</th>
                     <th scope="col">Quantity</th>
-                    <th scope="col">Piece Price</th>
+                    <th scope="col">Unit</th>
+                    <th scope="col">Quantity Type</th>
                     <th scope="col">Extra Quantity</th>
+                    <th scope="col">Total Quantity</th>
+                    <th scope="col">Piece Price</th>
                     <th scope="col">Total</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 {% for product in products %}
-                <tr>
-                    <td>{{ product.product.name }}</td>
-
-                    <td>{{ product.quantity }} <strong>{{ product.quantity_type.name}}</strong> </td>
-                    <td>{{ product.piece_price }}{{invoice.currency.name}}</td>
-                    <td>{{ product.extra_quantity }}</td>
-                    <th scope="row">{{ product.total }}{{invoice.currency.name}}</th>
-                </tr>
+                    <tr>
+                        <td>{{ product.product.name }}</td>
+                        <td>{{ product.quantity }} </td>
+                        <td>{{ product.product.weight }} </td>
+                        <td><strong>{{ product.quantity_type.name }}</strong></td>
+                        <td>{{ product.extra_quantity }} Piece</td>
+                        <td>{% widthratio product.quantity_type.value 1 product.quantity %}</td>
+                        <td>{{ product.piece_price }}</td>
+                        <th scope="row">{{ product.total }}{{ invoice.currency.name }}</th>
+                    </tr>
                 {% endfor %}
 
 
-            </tbody>
-        </table>
-    </div>
-    <div class="col-12">
-        <table class="table table-bordered" style="table-layout:fixed;width:100%;">
-            <thead>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-12">
+            <table class="table table-bordered" style="table-layout:fixed;width:100%;">
+                <thead>
                 <tr>
                     <th scope="col">Date</th>
                     <th scope="col">Seller Name</th>
@@ -40,18 +45,18 @@
                     <th scope="col">Discount</th>
                     <th scope="col">Total</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 <tr>
-                    <td>{{ invoice.date_added|date:"Y-m-d"  }}</td>
+                    <td>{{ invoice.date_added|date:"Y-m-d" }}</td>
 
                     <td>{{ invoice.seller.name }}</td>
                     <td>{{ invoice.seller.phone }}</td>
                     <td>{{ invoice.discount }}{{ invoice.currency.name }}</td>
-                    <td> <strong>{{ invoice.total }}{{ invoice.currency.name }}</strong> </td>
+                    <td><strong>{{ invoice.total }}{{ invoice.currency.name }}</strong></td>
                 </tr>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 {% endblock %}

@@ -81,19 +81,15 @@ class Product(models.Model):
 
 
 class Invoice(models.Model):
-    TYPE = Choices('Sale', 'Purchase')
+    TYPE = Choices('Sale', 'Purchase', 'Return')
     type = models.CharField(max_length=100, choices=TYPE, default=TYPE.Sale)
-    discount = models.FloatField()
+    discount = models.FloatField(default=0)
     discount_reason = models.CharField(max_length=300, default=" ")
-    payed = models.FloatField()
-    expected_earn = models.FloatField(blank=True, null=True)
-    earn = models.FloatField(blank=True, null=True)
+    earn = models.FloatField(blank=True, null=True, default=0)
     total = models.FloatField()
-    remaining = models.FloatField()
     date_added = models.DateTimeField(auto_now_add=True)
     seller = models.ForeignKey(Seller, on_delete=models.SET_NULL, null=True)
     worker = models.ForeignKey(Worker, on_delete=models.SET_NULL, null=True)
-    rate = models.FloatField(default=1)
     image = models.CharField(max_length=100, blank=False, null=True)
 
 

@@ -1,11 +1,11 @@
 import datetime
 import json
-
+import html
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.paginator import PageNotAnInteger, Paginator, EmptyPage
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -14,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from product.forms import *
 from product.models import *
 from turbo.settings import LOGIN_URL
+from django.core.serializers import serialize
 
 
 # Categories
@@ -103,16 +104,18 @@ def all_sellers(request):
     # Get method
     else:
         form = SellerForm()
-
-    sellers = Seller.objects.all()
-    page = request.GET.get('page', 1)
-    paginator = Paginator(sellers, 100)
-    try:
-        sellers = paginator.page(page)
-    except PageNotAnInteger:
-        sellers = paginator.page(1)
-    except EmptyPage:
-        sellers = paginator.page(paginator.num_pages)
+    if "search" in request.GET:
+        sellers = Seller.objects.filter(name__contains=request.GET["search"])
+    else:
+        sellers = Seller.objects.all()
+        page = request.GET.get('page', 1)
+        paginator = Paginator(sellers, 100)
+        try:
+            sellers = paginator.page(page)
+        except PageNotAnInteger:
+            sellers = paginator.page(1)
+        except EmptyPage:
+            sellers = paginator.page(paginator.num_pages)
 
     return render(request, 'seller/all.html', {'sellers': sellers, "form": form})
 
@@ -396,7 +399,10 @@ def edit_product(request, pk):
 @login_required(login_url=LOGIN_URL)
 def all_products(request):
     if "search" in request.GET:
-        products = Product.objects.filter(name__contains=request.GET["search"])
+        query = request.GET["search"]
+        products = Product.objects.filter(
+            Q(name__contains=query) |
+            Q(material__name__contains=query))
     else:
         products = Product.objects.all()
         page = request.GET.get('page', 1)
@@ -425,8 +431,6 @@ def add_invoice(request):
         invoice = Invoice()
         # type
         invoice.type = data["activeType"]
-        # Rate
-        # invoice.rate = data["rate"]
         se = Seller.objects.get(pk=data["activeSeller"])
         invoice.seller = se
         # worker
@@ -577,3 +581,65 @@ def edit_invoice(request, pk):
     if form.is_valid():
         form.save()
     return render(request, 'invoice/edit.html', {"form": form, "invoice": invoice})
+
+
+@login_required(login_url=LOGIN_URL)
+def returned_invoices(request):
+    returned = Invoice.objects.filter(type="Return")
+    return render(request, "invoice/returned_invoices.html", {"invoices": returned})
+
+
+@login_required(login_url=LOGIN_URL)
+def return_invoice(request, pk):
+    if request.method == "GET":
+        invoice = Invoice.objects.get(pk=pk)
+        context = {
+            "invoice": invoice,
+        }
+        return render(request, "invoice/return.html", context)
+    if request.method == "POST":
+        data = json.loads(request.POST.get("data"))
+        invoiceProducts = data["products"]
+
+        invoice = Invoice()
+        se = Seller.objects.get(pk=data["seller"])
+        wo = Worker.objects.get(pk=data["worker"])
+
+        invoice.type = "Return"
+        invoice.seller = se
+        invoice.worker = wo
+        invoice.total = 0
+        invoice.save()
+        for invoiceProduct in invoiceProducts:
+            invoice.total += invoiceProduct["total"]
+            ip = InvoiceProduct()
+            ip.quantity = invoiceProduct["quantity"]
+            ip.extra_quantity = invoiceProduct["extra_quantity"]
+            ip.total = invoiceProduct["total"]
+            ip.piece_price = invoiceProduct["piece_price"]
+            ip.product_id = invoiceProduct["product"]
+            ip.quantity_type = QuantityType.objects.get(pk=invoiceProduct["quantity_type"])
+            ip.invoice = Invoice.objects.last()
+            ip.save()
+            # Parent product updates
+            product = Product.objects.get(pk=invoiceProduct["product"])
+            product.quantity = product.quantity + float(invoiceProduct["quantity"])
+            product.extra_quantity = product.extra_quantity + float(invoiceProduct["extra_quantity"])
+            product.save()
+            invoice.save()
+        return HttpResponse(invoice.total)
+
+
+def get_invoice_products(request, pk):
+    products = []
+    invoice_products = InvoiceProduct.objects.filter(invoice=pk)
+    for invoice_product in invoice_products:
+        product = Product.objects.get(pk=invoice_product.product.pk)
+        products.append(product)
+    products = serializers.serialize("json", products)
+    invoice_products = serializers.serialize("json", invoice_products)
+    response = {
+        "invoice_products": invoice_products,
+        "products": products
+    }
+    return JsonResponse(response)

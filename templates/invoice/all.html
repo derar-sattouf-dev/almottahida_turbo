@@ -10,8 +10,7 @@
             <th>Seller</th>
             <th>Discount</th>
             <th>Total</th>
-            <th>View</th>
-            <th>Edit</th>
+            <th>Action</th>
         </tr>
         </thead>
         <tbody>
@@ -21,19 +20,34 @@
                 <th>{{ invoice.type }}</th>
                 <th>{{ invoice.date_added|date:"Y-m-d" }}</th>
                 <th>
-                    <a class="link"
+                    <a class="text-success"
                        href="{% url 'invoice.seller.view' invoice.seller.pk %}">{{ invoice.seller.name }}</a>
                 </th>
                 <td>
-                    <button type="button"  onclick="$('#activeimage').attr('src','{{ invoice.image }}')" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                    <button type="button" onclick="$('#activeimage').attr('src','{{ invoice.image }}')"
+                            data-toggle="modal" data-target="#myModal">
                         {{ invoice.discount }}
                     </button>
                 </td>
                 <th>{{ invoice.total }}{{ invoice.currency.name }}</th>
-                <th><a href="{% url 'invoice.view' invoice.pk %}">View</a></th>
-                {% if invoice.discount == 0 %}
-                    <th><a href="{% url 'invoice.edit' invoice.pk %}">Edit</a></th>
-                {% endif %}
+                <th>
+                    <button class="btn btn-sm btn-primary" {% if invoice.discount > 0 %}
+                            disabled
+                    {% endif %} >
+                        <a class="text-white"
+                           data-toggle="tooltip" data-placement="top" title="Add Discount"
+                           href="{% url 'invoice.edit' invoice.pk %}"><i class="mdi mdi-cash-minus"></i></a>
+                    </button>
+                    <a data-toggle="tooltip" data-placement="top" title="Return Invoice" class="btn btn-sm btn-danger"
+                       href="{% url 'invoice.return' invoice.pk %}">
+                        <i class="mdi mdi-keyboard-return"></i>
+
+                    </a>
+                    <a data-toggle="tooltip" data-placement="top" title="View Invoice" class="btn btn-sm btn-success"
+                       href="{% url 'invoice.view' invoice.pk %}"><i class="mdi mdi-eye"></i></a>
+                    <a data-toggle="tooltip" data-placement="top" title="Seller account" class="btn btn-sm btn-warning"
+                       href="{% url 'seller.add_payment' invoice.seller.pk %}"><i class="text-white mdi mdi-account-cash"></i></a>
+                </th>
             </tr>
         {% endfor %}
         </tbody>
@@ -48,4 +62,5 @@
             </div>
         </div>
     </div>
+    <style></style>
 {% endblock %}
