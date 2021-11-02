@@ -21,7 +21,7 @@
                 {% for product in products %}
                     <tr>
                         <td>{{ product.product.name }}</td>
-                        <td>{{ product.product.weight }} </td>
+                        <td>{{ product.product.weight_value }} {{ product.product.weight }}</td>
                         <td>{{ product.quantity }} </td>
                         <td><strong>{{ product.quantity_type.name }}</strong></td>
                         <td>{{ product.extra_quantity }} Piece</td>
