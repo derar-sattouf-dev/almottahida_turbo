@@ -592,7 +592,7 @@ def edit_invoice(request, pk):
 @login_required(login_url=LOGIN_URL)
 def returned_invoices(request):
     returned = Invoice.objects.filter(type="Return")
-    return render(request, "invoice/returned_invoices.html", {"invoices": returned})
+    return render(request, "invoice/all.html", {"invoices": returned})
 
 
 @login_required(login_url=LOGIN_URL)
