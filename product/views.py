@@ -105,7 +105,7 @@ def all_sellers(request):
     else:
         form = SellerForm()
     if "search" in request.GET:
-        sellers = Seller.objects.filter(name__contains=request.GET["search"])
+        sellers = Seller.objects.filter(name__icontains=request.GET["search"])
     else:
         sellers = Seller.objects.all()
         page = request.GET.get('page', 1)
@@ -401,8 +401,8 @@ def all_products(request):
     if "search" in request.GET:
         query = request.GET["search"]
         products = Product.objects.filter(
-            Q(name__contains=query) |
-            Q(material__name__contains=query))
+            Q(name__icontains=query) |
+            Q(material__name__icontains=query))
     else:
         products = Product.objects.all()
         page = request.GET.get('page', 1)
@@ -491,10 +491,10 @@ def product_autocomplete(request):
     query = request.POST.get("query")
     if len(query) > 2:
         products = Product.objects.filter(
-            Q(name__contains=query) |
-            Q(material__name__contains=query) |
-            Q(identifier__contains=query) |
-            Q(barcode__contains=query)
+            Q(name__icontains=query) |
+            Q(material__name__icontains=query) |
+            Q(identifier__icontains=query) |
+            Q(barcode__icontains=query)
         )
 
         products = serializers.serialize("json", products)
@@ -551,7 +551,7 @@ def seller_invoices(request, pk):
 @login_required(login_url=LOGIN_URL)
 def rawad(request):
     if "search" in request.GET:
-        products = Product.objects.filter(name__contains=request.GET["search"])
+        products = Product.objects.filter(name__icontains=request.GET["search"])
     else:
         products = Product.objects.all()
         page = request.GET.get('page', 1)
