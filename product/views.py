@@ -140,6 +140,7 @@ def add_seller_payment(request, pk):
 
     total_invoices = 0
     for invoice in invoices:
+        invoice.discount = format(invoice.discount, ".2f")
         if invoice.type == "Sale":
             total_invoices += (invoice.total - invoice.discount)
         else:
