@@ -7,16 +7,13 @@
             <table class="table table-bordered" style="table-layout:fixed;width:100%;">
                 <thead>
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Product</th>
-                    <th scope="col">Unit</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Quantity Type</th>
-                    <th scope="col">Extra Quantity</th>
-                    <th scope="col">Total Pieces</th>
-                    <th scope="col">Total Quantity</th>
-                    <th scope="col">Piece Price</th>
-                    <th scope="col">Total</th>
+                    <th scope="col" style="width:50px">#</th>
+                    <th scope="col">Description</th>
+                    <th scope="col" style="width:100px">Unit</th>
+                    <th scope="col" style="width:175px">Unit / Weight</th>
+                    <th scope="col" style="width:200px">Total Pieces</th>
+                    <th scope="col" style="width:175px">One Piece Price</th>
+                    <th scope="col" style="width:200px">Total</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -25,13 +22,11 @@
                         <td>
                             <a href="{% url 'product.edit' product.product.pk %}"><strong>{{ product.product.pk }}</strong></a>
                         </td>
-                        <td>{{ product.product.name }}</td>
-                        <td>{{ product.product.weight_value }} {{ product.product.weight }}</td>
-                        <td>{{ product.quantity }} </td>
-                        <td><strong>{{ product.quantity_type.name }}</strong></td>
-                        <td>{{ product.extra_quantity }} Piece</td>
+                        <td>{{ product.product.name }}
+                            ({{ product.quantity }} {{ product.quantity_type.name }}) {{ product.total_pices }}</td>
+                        <td>{{ product.product.weight }}</td>
+                        <td>{{ product.product.weight_value }}</td>
                         <td>{{ product.total_pices_count }}</td>
-                        <td>{{ product.total_pices }}</td>
                         <td>{{ product.piece_price }}</td>
                         <th scope="row">{{ product.total }}{{ invoice.currency.name }}</th>
                     </tr>

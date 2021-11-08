@@ -72,6 +72,7 @@ class Product(models.Model):
     extra_quantity = models.FloatField(null=True, default=0)
     barcode = models.CharField(null=True, max_length=100, blank=False, default=" ")
     identifier = models.CharField(null=True, max_length=100, blank=False)
+    Abbrivation = models.CharField(null=True, max_length=10, blank=False)
     location = models.CharField(null=True, max_length=100, blank=False)
     alert_if_lower_than = models.IntegerField(null=True)
     image = models.CharField(max_length=100, blank=False, null=True)
