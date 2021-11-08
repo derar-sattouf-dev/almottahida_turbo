@@ -674,10 +674,10 @@ def all_payments(request):
                 total_payments += payment.amount / payment.rate
 
         account = total_invoices - total_payments + seller.old_account
-        if account != 0:
-            to_add = {
-                "seller": seller,
-                "account": format(account, ".2f")
-            }
-            blocks.append(to_add)
+        to_add = {
+            "seller": seller,
+            "account": format(account, ".2f")
+        }
+        blocks.append(to_add)
+
         return render(request, "invoice/mustpay.html", {"blocks": blocks})
