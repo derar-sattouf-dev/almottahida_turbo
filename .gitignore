@@ -138,3 +138,4 @@ dmypy.json
 cython_debug/
 
 .idea
+product/migrations/0028_invoiceproduct_total_pices_count.py
