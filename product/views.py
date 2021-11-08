@@ -427,6 +427,7 @@ def view_invoice(request, pk):
         p.total_pices_count = str(
             float(float(p.quantity * p.quantity_type.value) + float(p.extra_quantity))) + " Pieces"
     invoice.total -= invoice.discount
+    invoice.total = format(invoice.total, ".2f")
     return render(request, "invoice/view.html", {"invoice": invoice, "products": products})
 
 
