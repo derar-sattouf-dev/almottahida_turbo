@@ -7,6 +7,7 @@
             <table class="table table-bordered" style="table-layout:fixed;width:100%;">
                 <thead>
                 <tr>
+                    <th scope="col">#</th>
                     <th scope="col">Product</th>
                     <th scope="col">Unit</th>
                     <th scope="col">Quantity</th>
@@ -21,6 +22,9 @@
                 <tbody>
                 {% for product in products %}
                     <tr>
+                        <td>
+                            <a href="{% url 'product.edit' product.product.pk %}"><strong>{{ product.product.pk }}</strong></a>
+                        </td>
                         <td>{{ product.product.name }}</td>
                         <td>{{ product.product.weight_value }} {{ product.product.weight }}</td>
                         <td>{{ product.quantity }} </td>
