@@ -424,6 +424,8 @@ def view_invoice(request, pk):
         p.total_pices = str(float(float(p.quantity * p.quantity_type.value) + float(
             p.extra_quantity)) * p.product.weight_value) + p.product.weight
 
+        p.total_pices = format(p.total_pices, ".2f")
+
         p.total_pices_count = str(
             float(float(p.quantity * p.quantity_type.value) + float(p.extra_quantity))) + " Pieces"
     invoice.total -= invoice.discount
