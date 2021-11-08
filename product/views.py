@@ -425,6 +425,7 @@ def view_invoice(request, pk):
             p.extra_quantity)) * p.product.weight_value)
 
         p.total_pices = format(float(p.total_pices), ".2f")
+        p.total = format(float(p.total), ".2f")
 
         p.total_pices += p.product.weight
 
