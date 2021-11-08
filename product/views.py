@@ -654,6 +654,7 @@ def get_invoice_products(request, pk):
 @login_required(login_url=LOGIN_URL)
 def all_payments(request):
     all_sellers = Seller.objects.all()
+    return HttpResponse(all_sellers)
     blocks = []
     for seller in all_sellers:
         invoices = Invoice.objects.filter(seller=seller)
