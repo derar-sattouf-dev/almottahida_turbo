@@ -654,7 +654,6 @@ def get_invoice_products(request, pk):
 @login_required(login_url=LOGIN_URL)
 def all_payments(request):
     all_sellers = Seller.objects.all()
-    return HttpResponse(all_sellers)
     blocks = []
     for seller in all_sellers:
         invoices = Invoice.objects.filter(seller=seller)
@@ -664,7 +663,7 @@ def all_payments(request):
         for invoice in invoices:
             if invoice.type == "Sale":
                 total_invoices += (invoice.total - invoice.discount)
-            else:
+            elif invoice.type == "Purchase":
                 total_invoices -= (invoice.total - invoice.discount)
 
         total_payments = 0
