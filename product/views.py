@@ -663,7 +663,7 @@ def all_payments(request):
         for invoice in invoices:
             if invoice.type == "Sale":
                 total_invoices += (invoice.total - invoice.discount)
-            elif invoice.type == "Purchase":
+            else:
                 total_invoices -= (invoice.total - invoice.discount)
 
         total_payments = 0
@@ -679,5 +679,4 @@ def all_payments(request):
             "account": format(account, ".2f")
         }
         blocks.append(to_add)
-
-        return render(request, "invoice/mustpay.html", {"blocks": blocks})
+    return render(request, "invoice/mustpay.html", {"blocks": blocks})

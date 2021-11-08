@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+
     <table class="table table-striped">
         <thead>
         <tr>
@@ -14,7 +15,7 @@
             <tr>
                 <td>{{ block.seller.name }}</td>
                 <td>{{ block.seller.phone }}</td>
-                <th>{{ block.account }}</th>
+                <td>{{ block.account }}</td>
             </tr>
         {% endfor %}
         </tbody>
