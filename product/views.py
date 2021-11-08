@@ -649,3 +649,35 @@ def get_invoice_products(request, pk):
         "products": products
     }
     return JsonResponse(response)
+
+
+@login_required(login_url=LOGIN_URL)
+def all_payments(request):
+    all_sellers = Seller.objects.all()
+    blocks = []
+    for seller in all_sellers:
+        invoices = Invoice.objects.filter(seller=seller)
+        payments = InvoicePayment.objects.filter(seller=seller)
+
+        total_invoices = 0
+        for invoice in invoices:
+            if invoice.type == "Sale":
+                total_invoices += (invoice.total - invoice.discount)
+            else:
+                total_invoices -= (invoice.total - invoice.discount)
+
+        total_payments = 0
+        for payment in payments:
+            if payment.operation == "Give":
+                total_payments -= payment.amount / payment.rate
+            else:
+                total_payments += payment.amount / payment.rate
+
+        account = total_invoices - total_payments + seller.old_account
+        if account != 0:
+            to_add = {
+                "seller": seller,
+                "account": format(account, ".2f")
+            }
+            blocks.append(to_add)
+        return render(request, "invoice/mustpay.html", {"blocks": blocks})

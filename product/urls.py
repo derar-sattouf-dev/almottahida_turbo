@@ -12,6 +12,7 @@ urlpatterns = [
     path("currency/", views.all_currencies, name='currency.all'),
     path("material/", views.all_materials, name='material.all'),
     path("invoice/add", views.add_invoice, name='invoice.add'),
+    path("payment/all", views.all_payments, name='payment.all'),
     path("invoice/<int:pk>/", views.view_invoice, name='invoice.view'),
     path("invoice/return", views.returned_invoices, name='invoice.returned'),
     path("invoice/<int:pk>/return", views.return_invoice, name='invoice.return'),

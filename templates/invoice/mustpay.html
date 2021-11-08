@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Seller</th>
+            <th>Phone</th>
+            <th>Account</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for block in blocks %}
+            <tr>
+                <td>{{ block.seller.name }}</td>
+                <td>{{ block.seller.phone }}</td>
+                <th>{{ block.account }}</th>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
