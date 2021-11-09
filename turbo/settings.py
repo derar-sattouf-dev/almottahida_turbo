@@ -67,12 +67,15 @@ DATABASES = {
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'mysql.connector.django',
         'NAME': 'almoekha_accounting_database',
         'USER': 'almoekha_accounting_user',
         'PASSWORD': 'TITNDPilavm7050@!',
         'HOST': 'localhost',
         'PORT': '3306',
+        'OPTIONS': {
+            'autocommit': True,
+        },
     }
 }
 
@@ -99,7 +102,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-STATIC_URL ="/static/"
+STATIC_URL = "/static/"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),)
 
