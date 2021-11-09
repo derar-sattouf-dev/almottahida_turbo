@@ -67,7 +67,7 @@ DATABASES = {
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'mysql.connector.django',
         'NAME': 'almoekha_accounting_database',
         'USER': 'almoekha_accounting_user',
         'PASSWORD': 'TITNDPilavm7050@!',
