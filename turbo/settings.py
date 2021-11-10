@@ -71,12 +71,23 @@ DATABASES = {
         'NAME': 'almoekha_accounting_database',
         'USER': 'almoekha_accounting_user',
         'PASSWORD': 'TITNDPilavm7050@!',
-        'HOST': '198.187.29.30',
+        'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
             'autocommit': True,
         },
     }
+    # 'default': {
+    #     'ENGINE': 'mysql.connector.django',
+    #     'NAME': 'derar_ac',
+    #     'USER': 'almoekha_accounting_user',
+    #     'PASSWORD': 'TITNDPilavm7050@!',
+    #     'HOST': 'localhost',
+    #     'PORT': '3306',
+    #     'OPTIONS': {
+    #         'autocommit': True,
+    #     },
+    # }
 }
 
 # Password validation
@@ -114,3 +125,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 #         'LOCATION': '127.0.0.1:11211',
 #     }
 # }
+
