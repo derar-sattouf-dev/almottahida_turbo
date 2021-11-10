@@ -68,15 +68,15 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'mysql.connector.django',
-        'NAME': 'almoekha_accounting_database',
-        'USER': 'almoekha_accounting_user',
-        'PASSWORD': 'TITNDPilavm7050@!',
+        'NAME': 't',
+        'USER': 'root',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '3306',
     }
     # 'default': {
     #     'ENGINE': 'mysql.connector.django',
-    #     'NAME': 'derar_ac',
+    #     'NAME': 'almoekha_accounting_database',
     #     'USER': 'almoekha_accounting_user',
     #     'PASSWORD': 'TITNDPilavm7050@!',
     #     'HOST': 'localhost',
