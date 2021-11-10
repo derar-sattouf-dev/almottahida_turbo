@@ -71,7 +71,7 @@ DATABASES = {
         'NAME': 'almoekha_accounting_database',
         'USER': 'almoekha_accounting_user',
         'PASSWORD': 'TITNDPilavm7050@!',
-        'HOST': 'localhost',
+        'HOST': '198.187.29.30',
         'PORT': '3306',
         'OPTIONS': {
             'autocommit': True,
