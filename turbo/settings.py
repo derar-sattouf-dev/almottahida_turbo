@@ -62,10 +62,10 @@ WSGI_APPLICATION = 'turbo.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
     # 'default': {
     #     'ENGINE': 'mysql.connector.django',
     #     'NAME': 'almoekha_accounting_database',
@@ -77,17 +77,17 @@ DATABASES = {
     #         'autocommit': True,
     #     },
     # }
-    'default': {
-        'ENGINE': 'mysql.connector.django',
-        'NAME': 'derar_accounting',
-        'USER': 'derar_accounting',
-        'PASSWORD': 'NDPilavm7050@!',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'autocommit': True,
-        },
-    }
+    # 'default': {
+    #     'ENGINE': 'mysql.connector.django',
+    #     'NAME': 'derar_accounting',
+    #     'USER': 'derar_accounting',
+    #     'PASSWORD': 'NDPilavm7050@!',
+    #     'HOST': 'localhost',
+    #     'PORT': '3306',
+    #     'OPTIONS': {
+    #         'autocommit': True,
+    #     },
+    # }
 }
 
 # Password validation
