@@ -73,9 +73,6 @@ DATABASES = {
         'PASSWORD': 'TITNDPilavm7050@!',
         'HOST': 'localhost',
         'PORT': '3306',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1",
-        },
     }
     # 'default': {
     #     'ENGINE': 'mysql.connector.django',
