@@ -66,22 +66,11 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
-    # 'default': {
-    #     'ENGINE': 'mysql.connector.django',
-    #     'NAME': 'almoekha_accounting_database',
-    #     'USER': 'almoekha_accounting_user',
-    #     'PASSWORD': 'TITNDPilavm7050@!',
-    #     'HOST': 'localhost',
-    #     'PORT': '3306',
-    #     'OPTIONS': {
-    #         'autocommit': True,
-    #     },
-    # }
     'default': {
         'ENGINE': 'mysql.connector.django',
-        'NAME': 'derar_accounting',
-        'USER': 'derar_accounting',
-        'PASSWORD': 'NDPilavm7050@!',
+        'NAME': 'almoekha_accounting_database',
+        'USER': 'almoekha_accounting_user',
+        'PASSWORD': 'TITNDPilavm7050@!',
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
