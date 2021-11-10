@@ -73,10 +73,21 @@ DATABASES = {
         'PASSWORD': 'TITNDPilavm7050@!',
         'HOST': 'localhost',
         'PORT': '3306',
-        'OPTIONS': {
+        'OPTIONS': { 
             'autocommit': True,
         },
     }
+    # 'default': {
+    #     'ENGINE': 'mysql.connector.django',
+    #     'NAME': 't',
+    #     'USER': 'root',
+    #     'PASSWORD': '',
+    #     'HOST': 'localhost',
+    #     'PORT': '3306',
+    #     'OPTIONS': {
+    #         'autocommit': True,
+    #     },
+    # }
 }
 
 # Password validation
