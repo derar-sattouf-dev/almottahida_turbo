@@ -63,9 +63,16 @@ WSGI_APPLICATION = 'turbo.wsgi.application'
 
 DATABASES = {
     # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
+    #     'ENGINE': 'mysql.connector.django',
+    #     'NAME': 't',
+    #     'USER': 'root',
+    #     'PASSWORD': '',
+    #     'HOST': 'localhost',
+    #     'PORT': '3306',
+    #     'OPTIONS': {
+    #         'autocommit': True,
+    #     },
+    # },
     'default': {
         'ENGINE': 'mysql.connector.django',
         'NAME': 'almoekha_accounting_database',
@@ -105,12 +112,4 @@ USE_TZ = True
 STATIC_URL = "/static/"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),)
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
-        'LOCATION': '127.0.0.1:11211',
-    }
-}

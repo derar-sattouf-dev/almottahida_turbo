@@ -13,7 +13,7 @@
     <div id="app">
         <h2 class="mb-4">Add new invoice</h2>
         <v-app>
-            <div>
+            <div v-if="!loading">
                 <v-data-table
                         :headers="headers"
                         :items="activeProducts"
@@ -219,7 +219,7 @@
                                                     outlined
                                                     disabled
                                                     v-model="total"
-                                                    :suffix="$"
+                                                    suffix="$"
 
                                             >
                                             </v-text-field>
@@ -249,6 +249,13 @@
                     </template>
                 </v-snackbar>
             </div>
+            <div v-else class="mt-6 mx-auto">
+                <v-progress-circular
+                        indeterminate
+                        size="100"
+                        color="primary"
+                ></v-progress-circular>
+            </div>
         </v-app>
     </div>
 
@@ -275,6 +282,7 @@
             el: '#app',
             vuetify: new Vuetify(),
             data: {
+                loading: true,
                 activeType: "Sale",
                 finalData: {},
                 total: 0,
@@ -284,7 +292,7 @@
                 activeSeller: "",
                 activeWorker: "",
                 menu1: false,
-                dialog: true,
+                dialog: false,
                 addDialog: false,
                 lastKnownProduct: "",
                 snack: false,
@@ -355,33 +363,33 @@
                             r[i]["fields"]["pk"] = r[i]["pk"]
                         }
                         this.sellers = r
+                        axios({
+                            method: "get",
+                            url: "{% url 'product.get_quantity_types' %}",
+                            headers: {"X-CSRFToken": '{{csrf_token}}'}
+                        }).then((r) => {
+                            var r = JSON.parse(r.data.result)
+                            for (let i = 0; i < r.length; i++) {
+                                r[i]["fields"]["pk"] = r[i]["pk"]
+                            }
+                            this.quantity_types = r
+
+                            axios({
+                                method: "get",
+                                url: "{% url 'product.get_workers' %}",
+                                headers: {"X-CSRFToken": '{{csrf_token}}'}
+                            }).then((r) => {
+                                var r = JSON.parse(r.data.result)
+                                for (let i = 0; i < r.length; i++) {
+                                    r[i]["fields"]["pk"] = r[i]["pk"]
+                                }
+                                this.workers = r
+                                this.loading = false
+                            })
+                        })
                     })
 
 
-                    axios({
-                        method: "get",
-                        url: "{% url 'product.get_workers' %}",
-                        headers: {"X-CSRFToken": '{{csrf_token}}'}
-                    }).then((r) => {
-                        var r = JSON.parse(r.data.result)
-                        for (let i = 0; i < r.length; i++) {
-                            r[i]["fields"]["pk"] = r[i]["pk"]
-                        }
-                        this.workers = r
-                    })
-
-
-                    axios({
-                        method: "get",
-                        url: "{% url 'product.get_quantity_types' %}",
-                        headers: {"X-CSRFToken": '{{csrf_token}}'}
-                    }).then((r) => {
-                        var r = JSON.parse(r.data.result)
-                        for (let i = 0; i < r.length; i++) {
-                            r[i]["fields"]["pk"] = r[i]["pk"]
-                        }
-                        this.quantity_types = r
-                    })
                 },
                 addProduct(p, w) {
                     p["quantity"] = 1
@@ -453,6 +461,7 @@
                     this.snackText = 'Price updated successfully'
                 },
                 addInvoice() {
+                    this.loading = true
                     this.finalData = {
                         total: this.total,
                         discount: this.discount,
@@ -473,6 +482,8 @@
                     }).then((r) => {
                         window.location.href = "{% url 'invoice.view.last' %}"
                     })
+                        .catch((e) => this.loading = false
+                        )
                 }
             }
         })
