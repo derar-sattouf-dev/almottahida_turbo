@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div id="app">
+        <v-app>
+            <div v-if="!loading">
+                <v-card v-if="!generated">
+                    <v-card-title>
+                        All Products
+                        <v-spacer></v-spacer>
+                        <v-text-field
+                                v-model="search"
+                                append-icon="mdi-magnify"
+                                label="Search"
+                                single-line
+                                hide-details
+                        ></v-text-field>
+                    </v-card-title>
+                    <v-data-table
+                            show-select
+                            v-model="selected"
+                            item-key="name"
+                            :headers="headers"
+                            :items="products"
+                            :search="search"
+                    >
+                        <template v-slot:item.price="props">
+                            <v-edit-dialog
+                                    :return-value.sync="props.item.price"
+                            >
+                                [[props.item.price]]
+                                <template v-slot:input>
+                                    <v-text-field
+                                            v-model="props.item.price"
+                                            label="Edit"
+                                            single-line
+                                    ></v-text-field>
+                                </template>
+                            </v-edit-dialog>
+                        </template>
+                    </v-data-table>
+
+                    <v-btn
+                            @click="generate()"
+                            block
+                            color="primary"
+                            depressed
+                            elevation="0"
+                            x-large
+                            class="my-2"
+                    >
+                        Generate Preview
+                    </v-btn>
+                </v-card>
+
+                <div v-if="generated">
+                    <v-simple-table>
+                        <template v-slot:default>
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Unit</th>
+                                <th>Active Ingredients</th>
+                                <th>Price</th>
+                                <th>Expire</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr
+                                    v-for="item in selected"
+                                    :key="item.name"
+                            >
+                                <td>[[ item.name ]]</td>
+                                <td>[[ item.weight ]]</td>
+                                <td>[[ item.material_name ]]</td>
+                                <td>[[ item.price ]]</td>
+                                <td>[[ item.expire ]]</td>
+                            </tr>
+                            </tbody>
+                        </template>
+                    </v-simple-table>
+                </div>
+            </div>
+            <div v-else class="mt-6 mx-auto">
+                <v-progress-circular
+                        indeterminate
+                        size="100"
+                        color="primary"
+                ></v-progress-circular>
+            </div>
+        </v-app>
+    </div>
+    <script>
+        new Vue({
+            delimiters: ["[[", "]]"],
+            vuetify: new Vuetify(),
+            el: "#app",
+            methods: {
+                generate() {
+                    this.generated = true;
+                    console.log(this.selected)
+                }
+            },
+            mounted() {
+                this.loading = true;
+                axios({
+                    method: "get",
+                    url: "{% url 'product.all_json' %}",
+                    headers: {"X-CSRFToken": '{{csrf_token}}'}
+                }).then((r) => {
+                    var r = JSON.parse(r.data.result)
+                    for (let i = 0; i < r.length; i++) {
+                        r[i] = r[i]["fields"]
+                    }
+                    this.products = r
+                    axios({
+                        method: "get",
+                        url: "{% url 'product.all_materials' %}",
+                        headers: {"X-CSRFToken": '{{csrf_token}}'}
+                    }).then((r) => {
+                        var r = JSON.parse(r.data.result)
+                        for (let i = 0; i < r.length; i++) {
+                            r[i]["fields"]["pk"] = r[i]["pk"]
+                            r[i] = r[i]["fields"]
+                        }
+                        this.materials = r
+                        for (let i = 0; i < this.products.length; i++) {
+                            this.products[i]["weight"] = this.products[i]["weight_value"] + " " + this.products[i]["weight"]
+                            var m_id = this.products[i]["material"][0]
+                            var ma = this.materials.filter(material => material.pk == m_id);
+                            this.products[i]["material_name"] = ma[0]["name"];
+                        }
+                        this.loading = false;
+                    })
+                })
+            },
+            data: {
+                search: '',
+                generated: false,
+                loading: false,
+                headers: [
+                    {
+                        text: 'Name',
+                        value: 'name',
+                    },
+
+                    {
+                        text: 'Unit',
+                        value: 'weight',
+                    },
+                    {
+                        text: 'Active Ingredients',
+                        value: 'material_name',
+                    },
+                    {
+                        text: 'Price',
+                        value: 'price',
+                    },
+                    {
+                        text: 'Expire',
+                        value: 'expire',
+                    },
+                ],
+                products: [],
+                materials: [],
+                selected: [],
+
+            }
+        })
+    </script>
+
+{% endblock %}

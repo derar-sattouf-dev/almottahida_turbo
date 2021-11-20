@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <div class="row">
+    <div class="row d-print-none">
         <div class="col-3">
             <div class="card">
                 <div class="card-header">
@@ -78,6 +78,61 @@
             </table>
         </div>
     </div>
+
+    <div class="col-12 d-none d-print-block">
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Total</th>
+                <th>Currency Rate</th>
+                <th>Discount</th>
+                <th>Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for invoice in invoices %}
+                <tr>
+                    <td><a href="{% url 'invoice.view' invoice.pk %}">#{{ invoice.pk }}</a></td>
+                    <td>Invoice({{ invoice.type }})</td>
+                    <td>{{ invoice.total }}{{ invoice.currency.name }}</td>
+                    <td>---</td>
+                    <td>{{ invoice.discount }}{{ invoice.currency.name }}</td>
+                    <td>{{ invoice.date_added|date:"Y-m-d" }}</td>
+                </tr>
+            {% endfor %}
+            {% for payment in payments %}
+                <tr>
+                    <td>---</td>
+                    <td>Payment ({{ payment.operation }})</td>
+                    <td>{{ payment.amount }}{{ payment.currency.name }}</td>
+                    <td>{{ payment.rate }}</td>
+                    <td>---</td>
+                    <td>{{ payment.add_date|date:"Y-m-d" }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Old Account</th>
+            <th>Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th></th>
+            <th>{{ seller.old_account }}</th>
+            <th>{{ total }}</th>
+        </tr>
+        </tbody>
+    </table>
+
     <style>
         #div_id_image {
             display: none;

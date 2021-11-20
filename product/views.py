@@ -9,7 +9,7 @@ from django.db.models import Q, Prefetch
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.decorators.csrf import csrf_exempt
+import json
 
 from product.forms import *
 from product.models import *
@@ -689,3 +689,22 @@ def all_payments(request):
             }
             blocks.append(to_add)
     return render(request, "invoice/mustpay.html", {"blocks": blocks})
+
+
+@login_required(login_url=LOGIN_URL)
+def offer(request):
+    return render(request, "product/offer.html")
+
+
+def get_all_products(request):
+    result = Product.objects.all()
+    result = serializers.serialize("json", result)
+    result = {"result": result}
+    return JsonResponse(result)
+
+
+def get_all_materials(request):
+    result = Material.objects.all()
+    result = serializers.serialize("json", result)
+    result = {"result": result}
+    return JsonResponse(result)
