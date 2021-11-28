@@ -76,21 +76,9 @@ DATABASES = {
     #     },
     # },
     # This is master
-    # 'default': {
-    #     'ENGINE': 'mysql.connector.django',
-    #     'NAME': 'almomjgn_accounting_database',
-    #     'USER': 'almomjgn_accounting_user',
-    #     'PASSWORD': 'TITNDPildvm7050@!',
-    #     'HOST': 'localhost',
-    #     'PORT': '3306',
-    #     'OPTIONS': {
-    #         'autocommit': True,
-    #     },
-    # }
-    # THis is syrian
-        'default': {
+    'default': {
         'ENGINE': 'mysql.connector.django',
-        'NAME': 'almomjgn_accounting_database_2',
+        'NAME': 'almomjgn_accounting_database',
         'USER': 'almomjgn_accounting_user',
         'PASSWORD': 'TITNDPildvm7050@!',
         'HOST': 'localhost',
@@ -99,6 +87,18 @@ DATABASES = {
             'autocommit': True,
         },
     }
+    # THis is syrian
+    #     'default': {
+    #     'ENGINE': 'mysql.connector.django',
+    #     'NAME': 'almomjgn_accounting_database_2',
+    #     'USER': 'almomjgn_accounting_user',
+    #     'PASSWORD': 'TITNDPildvm7050@!',
+    #     'HOST': 'localhost',
+    #     'PORT': '3306',
+    #     'OPTIONS': {
+    #         'autocommit': True,
+    #     },
+    # }
 }
 
 # Password validation
