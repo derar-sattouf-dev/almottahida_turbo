@@ -77,9 +77,9 @@ DATABASES = {
     # },
     'default': {
         'ENGINE': 'mysql.connector.django',
-        'NAME': 'almoekha_accounting_database',
-        'USER': 'almoekha_accounting_user',
-        'PASSWORD': 'TITNDPilavm7050@!',
+        'NAME': 'almomjgn_accounting_database',
+        'USER': 'almomjgn_accounting_user',
+        'PASSWORD': 'TITNDPildvm7050@!',
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
@@ -90,7 +90,7 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
-ALLOWED_HOSTS = ["almottahida.store", "127.0.0.1"]
+ALLOWED_HOSTS = ["almottahida.store", "127.0.0.1","almottahida.org"]
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
