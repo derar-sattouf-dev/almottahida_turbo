@@ -103,7 +103,7 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
-ALLOWED_HOSTS = ["almottahida.store", "127.0.0.1","accounting.almottahida.org","sy.accounting.almottahida.org"]
+ALLOWED_HOSTS = ["almottahida.org", "127.0.0.1","accounting.almottahida.org","sy.accounting.almottahida.org"]
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
