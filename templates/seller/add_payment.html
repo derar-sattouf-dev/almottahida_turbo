@@ -48,7 +48,7 @@
                         {% endfor %}
                         {% for payment in payments %}
                             <tr>
-                                <td>---</td>
+                                <td>#{{payment.pk}}</td>
                                 <td>Payment ({{ payment.operation }})</td>
                                 <td>{{ payment.amount }}{{ payment.currency.name }}</td>
                                 <td>{{ payment.rate }}</td>
