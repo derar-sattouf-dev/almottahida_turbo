@@ -64,29 +64,29 @@ WSGI_APPLICATION = 'turbo.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'mysql.connector.django',
-        'NAME': 't',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'autocommit': True,
-        },
-    },
-    # This is master
     # 'default': {
     #     'ENGINE': 'mysql.connector.django',
-    #     'NAME': 'almomjgn_accounting_database',
-    #     'USER': 'almomjgn_accounting_user',
-    #     'PASSWORD': 'TITNDPildvm7050@!',
+    #     'NAME': 't',
+    #     'USER': 'root',
+    #     'PASSWORD': '',
     #     'HOST': 'localhost',
     #     'PORT': '3306',
     #     'OPTIONS': {
     #         'autocommit': True,
     #     },
-    # }
+    # },
+    # This is master
+    'default': {
+        'ENGINE': 'mysql.connector.django',
+        'NAME': 'almomjgn_accounting_database',
+        'USER': 'almomjgn_accounting_user',
+        'PASSWORD': 'TITNDPildvm7050@!',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'OPTIONS': {
+            'autocommit': True,
+        },
+    }
     # THis is syrian
     #     'default': {
     #     'ENGINE': 'mysql.connector.django',
