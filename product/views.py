@@ -708,3 +708,8 @@ def get_all_materials(request):
     result = serializers.serialize("json", result)
     result = {"result": result}
     return JsonResponse(result)
+
+
+def category_products(request, pk):
+    products = Product.objects.filter(category_id=pk)
+    return render(request, "category/products.html", {"products": products})
