@@ -153,7 +153,7 @@
                 var rows = [].slice.call(tbody.querySelectorAll("tr"));
 
                 rows.sort(function (a, b) {
-                    return convertDate(a.cells[0].innerHTML) - convertDate(b.cells[0].innerHTML);
+                    return convertDate(a.cells[5].innerHTML) - convertDate(b.cells[5].innerHTML);
                 });
 
                 rows.forEach(function (v) {
