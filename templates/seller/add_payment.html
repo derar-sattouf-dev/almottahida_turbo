@@ -9,13 +9,13 @@
                     Add Payment
                 </div>
                 <div class="card-body">
-                    <form method="post" action="{% url 'seller.add_payment' seller.pk %}">
+                    <form method="post" id="form" action="{% url 'seller.add_payment' seller.pk %}">
                         {% csrf_token %}
                         {{ form|crispy }}
                         <label for="formFile" class="form-label">Payment image</label>
                         <input class="form-control" type="file" id="image">
                         <br>
-                        <button type="submit" class="btn btn-success">Add Payment</button>
+                        <button type="submit" id="suB" class="btn btn-success">Add Payment</button>
                     </form>
                 </div>
             </div>
@@ -48,7 +48,7 @@
                         {% endfor %}
                         {% for payment in payments %}
                             <tr>
-                                <td>#{{payment.pk}}</td>
+                                <td>#{{ payment.pk }}</td>
                                 <td>Payment ({{ payment.operation }})</td>
                                 <td>{{ payment.amount }}{{ payment.currency.name }}</td>
                                 <td>{{ payment.rate }}</td>
@@ -140,6 +140,17 @@
     </style>
     <script>
         $('document').ready(function () {
+            $("#suB").click(function (e) {
+                e.preventDefault()
+                const response = prompt("Are You Sure ?")
+                if(response == "yes")
+                {
+                    $("#form").submit()
+                }
+                else {
+                    alert("Give iza enta bddak ta3tih, take iza hwwi bddo ya3tik")
+                }
+            });
             $('#image').on('change', function () {
                 var $files = $(this).get(0).files;
 
