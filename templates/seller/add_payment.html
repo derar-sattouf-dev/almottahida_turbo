@@ -43,7 +43,7 @@
                                 <td>{{ invoice.total }}{{ invoice.currency.name }}</td>
                                 <td>---</td>
                                 <td>{{ invoice.discount }}{{ invoice.currency.name }}</td>
-                                <td>{{ invoice.date_added|date:"d-m-y" }}</td>
+                                <td>{{ invoice.date_added|date:"d-m-Y" }}</td>
                             </tr>
                         {% endfor %}
                         {% for payment in payments %}
