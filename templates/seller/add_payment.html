@@ -24,7 +24,7 @@
             <div class="card">
                 <div class="card-header">History</div>
                 <div class="card-body">
-                    <table class="table table-striped">
+                    <table id="results" class="table table-striped">
                         <thead>
                         <tr>
                             <th>ID</th>
@@ -140,14 +140,35 @@
     </style>
     <script>
         $('document').ready(function () {
+
+
+            function convertDate(d) {
+                var p = d.split("/");
+                return +(p[2] + p[1] + p[0]);
+            }
+
+            function sortByDate() {
+                var tbody = document.querySelector("#results tbody");
+                // get trs as array for ease of use
+                var rows = [].slice.call(tbody.querySelectorAll("tr"));
+
+                rows.sort(function (a, b) {
+                    return convertDate(a.cells[0].innerHTML) - convertDate(b.cells[0].innerHTML);
+                });
+
+                rows.forEach(function (v) {
+                    tbody.appendChild(v); // note that .appendChild() *moves* elements
+                });
+            }
+
+
+            sortByDate()
             $("#suB").click(function (e) {
                 e.preventDefault()
                 const response = prompt("Are You Sure ?")
-                if(response == "yes")
-                {
+                if (response == "yes") {
                     $("#form").submit()
-                }
-                else {
+                } else {
                     alert("Give iza enta bddak ta3tih, take iza hwwi bddo ya3tik")
                 }
             });
