@@ -35,7 +35,7 @@
                             <th>Date</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tbody">
                         {% for invoice in invoices %}
                             <tr>
                                 <td><a href="{% url 'invoice.view' invoice.pk %}">#{{ invoice.pk }}</a></td>
@@ -43,7 +43,7 @@
                                 <td>{{ invoice.total }}{{ invoice.currency.name }}</td>
                                 <td>---</td>
                                 <td>{{ invoice.discount }}{{ invoice.currency.name }}</td>
-                                <td>{{ invoice.date_added|date:"Y-m-d" }}</td>
+                                <td>{{ invoice.date_added|date:"d-m-y" }}</td>
                             </tr>
                         {% endfor %}
                         {% for payment in payments %}
@@ -53,7 +53,7 @@
                                 <td>{{ payment.amount }}{{ payment.currency.name }}</td>
                                 <td>{{ payment.rate }}</td>
                                 <td>---</td>
-                                <td>{{ payment.add_date|date:"Y-m-d" }}</td>
+                                <td>{{ payment.add_date|date:"d-m-Y" }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -92,7 +92,7 @@
                 <th>Date</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="tbody2">
             {% for invoice in invoices %}
                 <tr>
                     <td><a href="{% url 'invoice.view' invoice.pk %}">#{{ invoice.pk }}</a></td>
@@ -100,7 +100,7 @@
                     <td>{{ invoice.total }}{{ invoice.currency.name }}</td>
                     <td>---</td>
                     <td>{{ invoice.discount }}{{ invoice.currency.name }}</td>
-                    <td>{{ invoice.date_added|date:"Y-m-d" }}</td>
+                    <td>{{ invoice.date_added|date:"d-m-Y" }}</td>
                 </tr>
             {% endfor %}
             {% for payment in payments %}
@@ -110,7 +110,7 @@
                     <td>{{ payment.amount }}{{ payment.currency.name }}</td>
                     <td>{{ payment.rate }}</td>
                     <td>---</td>
-                    <td>{{ payment.add_date|date:"Y-m-d" }}</td>
+                    <td>{{ payment.add_date|date:"d-m-Y" }}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -148,7 +148,22 @@
             }
 
             function sortByDate() {
-                var tbody = document.querySelector("#results tbody");
+                var tbody = document.querySelector("#tbody");
+                // get trs as array for ease of use
+                var rows = [].slice.call(tbody.querySelectorAll("tr"));
+
+                rows.sort(function (a, b) {
+                    return convertDate(a.cells[4].innerHTML) - convertDate(b.cells[4].innerHTML);
+                });
+
+                rows.forEach(function (v) {
+                    console.log(v)
+                    tbody.appendChild(v); // note that .appendChild() *moves* elements
+                });
+            }
+
+            function sortByDate2() {
+                var tbody = document.querySelector("#tbody2");
                 // get trs as array for ease of use
                 var rows = [].slice.call(tbody.querySelectorAll("tr"));
 
@@ -164,6 +179,7 @@
 
 
             sortByDate()
+            sortByDate2()
             $("#suB").click(function (e) {
                 e.preventDefault()
                 const response = prompt("Are You Sure ?")
