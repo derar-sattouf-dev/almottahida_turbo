@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th> Sum Of Stock</th>
+                <th> Sum After Sale</th>
+                <th> Sum Of Depts</th>
+                <th> Sum Of Must Pay</th>
+                <th> Saled</th>
+                <th> Earned</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th>{{ total_stock_price }} $</th>
+                <th>{{ total_sale_price }} $</th>
+                <th>{{ total_depts }} $</th>
+                <th>{{ total_must_pay }} $</th>
+                <th>{{ total_saled }} $</th>
+                <th>{{ total_earned }} $</th>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

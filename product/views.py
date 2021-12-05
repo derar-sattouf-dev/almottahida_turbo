@@ -713,3 +713,70 @@ def get_all_materials(request):
 def category_products(request, pk):
     products = Product.objects.filter(category_id=pk)
     return render(request, "category/products.html", {"products": products})
+
+
+@login_required(login_url=LOGIN_URL)
+def all_reports(request):
+    context = {}
+    total_stock_price = 0
+    total_sale_price = 0
+    total_depts = 0
+    total_must_pay = 0
+    total_saled = 0
+    total_earned = 0
+    total_box_takes = 0
+    all_products = Product.objects.all()
+    all_invoices = Invoice.objects.filter(type="Sale")
+    all_invoice_products = InvoiceProduct.objects.all()
+    all_sellers = Seller.objects.all()
+    all_box_operations = DailyBoxOperation.objects.all()
+
+    for invoice in all_invoices:
+        total_saled += invoice.total - invoice.discount
+
+    for product in all_invoice_products:
+        total_price = product.product.stock_price * (
+                (product.quantity_type.value * product.quantity) + product.extra_quantity)
+        total_sales = product.total
+        final_number = total_sales - total_price
+        total_earned += final_number
+        # Products
+    for product in all_products:
+        stock_price = product.stock_price
+        price = product.price
+        quantity_in_pices = (product.quantity_type.value * product.quantity) + product.extra_quantity
+        total_stock_price += quantity_in_pices * stock_price
+        total_sale_price += quantity_in_pices * price
+
+    for seller in all_sellers:
+        invoices = Invoice.objects.filter(seller=seller)
+        payments = InvoicePayment.objects.filter(seller=seller)
+
+        total_invoices = 0
+        for invoice in invoices:
+            if invoice.type == "Sale":
+                total_invoices += (invoice.total - invoice.discount)
+            else:
+                total_invoices -= (invoice.total - invoice.discount)
+
+        total_payments = 0
+        for payment in payments:
+            if payment.operation == "Give":
+                total_payments -= payment.amount / payment.rate
+            else:
+                total_payments += payment.amount / payment.rate
+
+        account = total_invoices - total_payments + seller.old_account
+        if account > 0:
+            total_depts += account
+        if account < 0:
+            total_must_pay += account
+
+    context["total_stock_price"] = format(total_stock_price, ".2f")
+    context["total_sale_price"] = format(total_sale_price, ".2f")
+    context["total_depts"] = format(total_depts, ".2f")
+    context["total_must_pay"] = format(total_must_pay, ".2f")
+    context["total_saled"] = format(total_saled, ".2f")
+    context["total_earned"] = format(total_earned, ".2f")
+    context["total_box_takes"] = format(total_box_takes, ".2f")
+    return render(request, "reports.html", context)

@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
-
 {% block content %}
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -28,37 +27,6 @@
                                     <div class="col-12 col-md-6">{{ form.weight_value|as_crispy_field }}</div>
                                     <div class="col-12 col-md-6">
                                         {{ form.expire|as_crispy_field }}
-
-                                        {#                                        <div id="dpick">#}
-                                        {#                                            <v-app>#}
-                                        {#                                                <v-menu#}
-                                        {#                                                        v-model="menu1"#}
-                                        {#                                                        :close-on-content-click="true"#}
-                                        {#                                                        transition="scale-transition"#}
-                                        {#                                                        offset-y#}
-                                        {#                                                        max-width="290px"#}
-                                        {#                                                        min-width="auto"#}
-                                        {#                                                >#}
-                                        {#                                                    <template v-slot:activator="{ on, attrs }">#}
-                                        {#                                                        <v-text-field#}
-                                        {#                                                                name="expire"#}
-                                        {#                                                                v-model="exp"#}
-                                        {#                                                                label="Expire Date"#}
-                                        {#                                                                outlined#}
-                                        {#                                                                persistent-hint#}
-                                        {#                                                                v-bind="attrs"#}
-                                        {#                                                                v-on="on"#}
-                                        {#                                                        ></v-text-field>#}
-                                        {#                                                    </template>#}
-                                        {#                                                    <v-date-picker#}
-                                        {#                                                            v-model="exp"#}
-                                        {#                                                            no-title#}
-                                        {#                                                            @input="menu1 = false"#}
-                                        {#                                                    ></v-date-picker>#}
-                                        {#                                                </v-menu>#}
-                                        {#                                            </v-app>#}
-                                        {#                                        </div>#}
-
                                     </div>
                                     <div class="col-12 col-md-6">
                                         <div style="display:none;">
@@ -77,9 +45,9 @@
                             <div class="card-header">Pricing ($)</div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-12 col-md-6">{{ form.stock_price|as_crispy_field }}</div>
-                                    <div class="col-12 col-md-6">{{ form.price|as_crispy_field }}</div>
-                                    <div class="col-12 col-md-6">{{ form.special|as_crispy_field }}</div>
+{#                                    <div class="col-12 col-md-6">{{ form.stock_price|as_crispy_field }}</div>#}
+{#                                    <div class="col-12 col-md-6">{{ form.price|as_crispy_field }}</div>#}
+{#                                    <div class="col-12 col-md-6">{{ form.special|as_crispy_field }}</div>#}
                                 </div>
                             </div>
                         </div>
@@ -103,10 +71,10 @@
                             <div class="card-header">Quantity</div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-12 col-md-6">{{ form.quantity_type|as_crispy_field }}</div>
-                                    <div class="col-12 col-md-6">{{ form.quantity|as_crispy_field }}</div>
-                                    <div class="col-12 col-md-6">{{ form.extra_quantity|as_crispy_field }}</div>
-                                    <div class="col-12 col-md-6">{{ form.alert_if_lower_than|as_crispy_field }}</div>
+{#                                    <div class="col-12 col-md-6">{{ form.quantity_type|as_crispy_field }}</div>#}
+{#                                    <div class="col-12 col-md-6">{{ form.quantity|as_crispy_field }}</div>#}
+{#                                    <div class="col-12 col-md-6">{{ form.extra_quantity|as_crispy_field }}</div>#}
+{#                                    <div class="col-12 col-md-6">{{ form.alert_if_lower_than|as_crispy_field }}</div>#}
                                 </div>
                             </div>
                         </div>
