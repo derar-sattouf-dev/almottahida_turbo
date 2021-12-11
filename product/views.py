@@ -15,6 +15,7 @@ from product.forms import *
 from product.models import *
 from turbo.settings import LOGIN_URL
 from django.core.serializers import serialize
+from django.core import serializers
 
 
 # Categories
@@ -154,6 +155,8 @@ def add_seller_payment(request, pk):
             total_payments += payment.amount / payment.rate
     seller = Seller.objects.get(pk=pk)
     total = total_invoices - total_payments + seller.old_account
+
+    total = format(total, ".2f")
     return render(request, "seller/add_payment.html",
                   {"form": form, "invoices": invoices, "payments": payments, "seller": seller,
                    "total_invoices": total_invoices, "total_payments": total_payments, "total": total})
@@ -785,3 +788,23 @@ def all_reports(request):
     context["total_earned"] = format(total_earned, ".2f")
     context["total_box_takes"] = format(total_box_takes, ".2f")
     return render(request, "reports.html", context)
+
+
+def remote_seller_invoices(request, name):
+    invoices = Invoice.objects.filter(seller__name=name)
+    for invoice in invoices:
+        invoice.discount = float(format(invoice.discount, ".2f"))
+
+    tmpJson = serializers.serialize("json", invoices)
+    tmpObj = json.loads(tmpJson)
+    return HttpResponse(json.dumps(tmpObj))
+
+
+def remote_seller_payments(request, name):
+    payments = InvoicePayment.objects.filter(seller__name=name)
+    for payment in payments:
+        payment.amount = payment.amount / payment.rate
+
+    tmpJson = serializers.serialize("json", payments)
+    tmpObj = json.loads(tmpJson)
+    return HttpResponse(json.dumps(tmpObj))

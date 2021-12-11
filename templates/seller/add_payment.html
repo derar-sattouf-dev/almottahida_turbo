@@ -71,8 +71,8 @@
                 <tbody>
                 <tr>
                     <th></th>
-                    <th>{{ seller.old_account }}</th>
-                    <th>{{ total }}</th>
+                    <th id="oldaccount">{{ seller.old_account }}</th>
+                    <th id="total">{{ total }}</th>
                 </tr>
                 </tbody>
             </table>
@@ -141,45 +141,73 @@
     <script>
         $('document').ready(function () {
 
+            $.ajax({
+                url: "https://sy.accounting.almottahida.org{% url 'seller.remote_payments' seller.name %}"
+            }).done(function (data) {
+                data = JSON.parse(data)
+                console.log(data)
+                var html = ""
+                for (let i = 0; i < data.length; i++) {
+                    let invoice = data[i]
 
-            function convertDate(d) {
-                var p = d.split("/");
-                return +(p[2] + p[1] + p[0]);
-            }
+                    let type = invoice.fields.operation
+                    let total = parseFloat(invoice.fields.amount)
+                    let nowTotal = parseFloat($("#total").text())
+                    if (type === "Give") {
+                        nowTotal += total
+                    } else {
+                        nowTotal -= total
+                    }
+                    $("#total").text(nowTotal)
 
-            function sortByDate() {
-                var tbody = document.querySelector("#tbody");
-                // get trs as array for ease of use
-                var rows = [].slice.call(tbody.querySelectorAll("tr"));
-
-                rows.sort(function (a, b) {
-                    return convertDate(a.cells[4].innerHTML) - convertDate(b.cells[4].innerHTML);
-                });
-
-                rows.forEach(function (v) {
-                    console.log(v)
-                    tbody.appendChild(v); // note that .appendChild() *moves* elements
-                });
-            }
-
-            function sortByDate2() {
-                var tbody = document.querySelector("#tbody2");
-                // get trs as array for ease of use
-                var rows = [].slice.call(tbody.querySelectorAll("tr"));
-
-                rows.sort(function (a, b) {
-                    return convertDate(a.cells[4].innerHTML) - convertDate(b.cells[4].innerHTML);
-                });
-
-                rows.forEach(function (v) {
-                    console.log(v)
-                    tbody.appendChild(v); // note that .appendChild() *moves* elements
-                });
-            }
+                    let d = invoice.fields.add_date
+                    let bigd = new Date(d)
+                    html += "<tr>"
+                    html += "<td>" + invoice.pk + "</td>"
+                    html += "<td>" + "Payment(" + invoice.fields.operation + ")" + "</td>"
+                    html += "<td>" + invoice.fields.amount + "$" + "</td>"
 
 
-            sortByDate()
-            sortByDate2()
+                    html += "<td>" + "----" + "</td>"
+                    html += "<td>" + "----" + "</td>"
+                    html += "<td>" + bigd.getDay() + "-" + bigd.getMonth() + "-" + bigd.getFullYear() + "</td>"
+                    html += "</tr>"
+                }
+                $("#tbody").html($("#tbody").html() + html)
+            })
+
+            $.ajax({
+                url: "https://sy.accounting.almottahida.org{% url 'seller.remote_invoices' seller.name %}"
+            }).done(function (data) {
+                data = JSON.parse(data)
+                var html = ""
+                html += "<tr><th>Sy</th></tr>"
+                for (let i = 0; i < data.length; i++) {
+                    let invoice = data[i]
+                    let type = invoice.fields.type
+                    let total = parseFloat(invoice.fields.total)
+                    let nowTotal = parseFloat($("#total").text())
+                    if (type === "Purchase") {
+                        nowTotal -= total
+                    } else {
+                        nowTotal += total
+                    }
+                    $("#total").text(nowTotal)
+                    let d = invoice.fields.date_added
+                    let bigd = new Date(d)
+                    html += "<tr>"
+                    html += "<td>" + invoice.pk + "</td>"
+                    html += "<td>" + "Invoice(" + invoice.fields.type + ")" + "</td>"
+
+                    html += "<td>" + invoice.fields.total + "</td>"
+                    html += "<td>" + "----" + "</td>"
+                    html += "<td>" + invoice.fields.discount + "</td>"
+                    html += "<td>" + bigd.getDay() + "-" + bigd.getMonth() + "-" + bigd.getFullYear() + "</td>"
+                    html += "</tr>"
+                }
+                $("#tbody").html($("#tbody").html() + html)
+            })
+
             $("#suB").click(function (e) {
                 e.preventDefault()
                 const response = prompt("Are You Sure ?")
