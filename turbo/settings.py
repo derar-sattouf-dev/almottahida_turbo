@@ -26,10 +26,13 @@ INSTALLED_APPS = [
     'crispy_forms',
     'product',
     'users',
+    "corsheaders",
     'home'
+
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -37,6 +40,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'turbo.urls'
@@ -92,7 +96,7 @@ DATABASES = {
     #     },
     # }
     # THis is syrian
-        'default': {
+    'default': {
         'ENGINE': 'mysql.connector.django',
         'NAME': 'almomjgn_accounting_database_2',
         'USER': 'almomjgn_accounting_user',
@@ -134,3 +138,4 @@ TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),)
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')  # 'data' is my media folder
 MEDIA_URL = '/media/'
+CORS_ALLOW_ALL_ORIGINS = True
