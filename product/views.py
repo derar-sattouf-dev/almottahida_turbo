@@ -613,8 +613,9 @@ def return_invoice(request, pk):
         return render(request, "invoice/return.html", context)
     if request.method == "POST":
         data = json.loads(request.POST.get("data"))
+        old_invoice = Invoice.objects.get(pk=pk)
+        old_type = old_invoice.type
         invoiceProducts = data["products"]
-
         invoice = Invoice()
         se = Seller.objects.get(pk=data["seller"])
         wo = Worker.objects.get(pk=data["worker"])
@@ -637,8 +638,12 @@ def return_invoice(request, pk):
             ip.save()
             # Parent product updates
             product = Product.objects.get(pk=invoiceProduct["product"])
-            product.quantity = product.quantity + float(invoiceProduct["quantity"])
-            product.extra_quantity = product.extra_quantity + float(invoiceProduct["extra_quantity"])
+            if old_type == "Sale":
+                product.quantity = product.quantity + float(invoiceProduct["quantity"])
+                product.extra_quantity = product.extra_quantity + float(invoiceProduct["extra_quantity"])
+            if old_type == "Purchase":
+                product.quantity = product.quantity - float(invoiceProduct["quantity"])
+                product.extra_quantity = product.extra_quantity - float(invoiceProduct["extra_quantity"])
             product.save()
             invoice.save()
         return HttpResponse(invoice.total)
