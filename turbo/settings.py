@@ -84,17 +84,17 @@ DATABASES = {
     #     },
     # }
     # This is master
-    'default': {
-        'ENGINE': 'mysql.connector.django',
-        'NAME': 'almomjgn_accounting_database',
-        'USER': 'almomjgn_accounting_user',
-        'PASSWORD': 'TITNDPildvm7050@!',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'autocommit': True,
-        },
-    }
+    # 'default': {
+    #     'ENGINE': 'mysql.connector.django',
+    #     'NAME': 'almomjgn_accounting_database',
+    #     'USER': 'almomjgn_accounting_user',
+    #     'PASSWORD': 'TITNDPildvm7050@!',
+    #     'HOST': 'localhost',
+    #     'PORT': '3306',
+    #     'OPTIONS': {
+    #         'autocommit': True,
+    #     },
+    # }
     # THis is syrian
     # 'default': {
     #     'ENGINE': 'mysql.connector.django',
