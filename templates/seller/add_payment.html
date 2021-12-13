@@ -92,7 +92,7 @@
                 <th>Date</th>
             </tr>
             </thead>
-            <tbody id="tbody2">
+            <tbody id="tbody">
             {% for invoice in invoices %}
                 <tr>
                     <td><a href="{% url 'invoice.view' invoice.pk %}">#{{ invoice.pk }}</a></td>
@@ -128,7 +128,7 @@
         <tr>
             <th></th>
             <th>{{ seller.old_account }}</th>
-            <th>{{ total }}</th>
+            <th id="total">{{ total }}</th>
         </tr>
         </tbody>
     </table>
