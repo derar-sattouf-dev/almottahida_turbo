@@ -2,8 +2,8 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <div class="row d-print-none">
-        <div class="col-3">
+    <div class="row ">
+        <div class="col-3 d-print-none">
             <div class="card">
                 <div class="card-header">
                     Add Payment
@@ -20,9 +20,9 @@
                 </div>
             </div>
         </div>
-        <div class="col-9">
+        <div id="view">
             <div class="card">
-                <div class="card-header">History</div>
+                <div class="card-header"><strong>{{ seller.name }}</strong> History</div>
                 <div class="card-body">
                     <table id="results" class="table table-striped">
                         <thead>
@@ -79,59 +79,59 @@
         </div>
     </div>
 
-    <div class="col-12 d-none d-print-block">
-
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Type</th>
-                <th>Total</th>
-                <th>Currency Rate</th>
-                <th>Discount</th>
-                <th>Date</th>
-            </tr>
-            </thead>
-            <tbody id="tbody">
-            {% for invoice in invoices %}
-                <tr>
-                    <td><a href="{% url 'invoice.view' invoice.pk %}">#{{ invoice.pk }}</a></td>
-                    <td>Invoice({{ invoice.type }})</td>
-                    <td>{{ invoice.total }}{{ invoice.currency.name }}</td>
-                    <td>---</td>
-                    <td>{{ invoice.discount }}{{ invoice.currency.name }}</td>
-                    <td>{{ invoice.date_added|date:"d-m-Y" }}</td>
-                </tr>
-            {% endfor %}
-            {% for payment in payments %}
-                <tr>
-                    <td>---</td>
-                    <td>Payment ({{ payment.operation }})</td>
-                    <td>{{ payment.amount }}{{ payment.currency.name }}</td>
-                    <td>{{ payment.rate }}</td>
-                    <td>---</td>
-                    <td>{{ payment.add_date|date:"d-m-Y" }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th></th>
-            <th>Old Account</th>
-            <th>Total</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <th></th>
-            <th>{{ seller.old_account }}</th>
-            <th id="total">{{ total }}</th>
-        </tr>
-        </tbody>
-    </table>
+    {#    <div class="col-12 d-none d-print-block">#}
+    {##}
+    {#        <table class="table table-striped">#}
+    {#            <thead>#}
+    {#            <tr>#}
+    {#                <th>ID</th>#}
+    {#                <th>Type</th>#}
+    {#                <th>Total</th>#}
+    {#                <th>Currency Rate</th>#}
+    {#                <th>Discount</th>#}
+    {#                <th>Date</th>#}
+    {#            </tr>#}
+    {#            </thead>#}
+    {#            <tbody id="tbody">#}
+    {#            {% for invoice in invoices %}#}
+    {#                <tr>#}
+    {#                    <td><a href="{% url 'invoice.view' invoice.pk %}">#{{ invoice.pk }}</a></td>#}
+    {#                    <td>Invoice({{ invoice.type }})</td>#}
+    {#                    <td>{{ invoice.total }}{{ invoice.currency.name }}</td>#}
+    {#                    <td>---</td>#}
+    {#                    <td>{{ invoice.discount }}{{ invoice.currency.name }}</td>#}
+    {#                    <td>{{ invoice.date_added|date:"d-m-Y" }}</td>#}
+    {#                </tr>#}
+    {#            {% endfor %}#}
+    {#            {% for payment in payments %}#}
+    {#                <tr>#}
+    {#                    <td>---</td>#}
+    {#                    <td>Payment ({{ payment.operation }})</td>#}
+    {#                    <td>{{ payment.amount }}{{ payment.currency.name }}</td>#}
+    {#                    <td>{{ payment.rate }}</td>#}
+    {#                    <td>---</td>#}
+    {#                    <td>{{ payment.add_date|date:"d-m-Y" }}</td>#}
+    {#                </tr>#}
+    {#            {% endfor %}#}
+    {#            </tbody>#}
+    {#        </table>#}
+    {#    </div>#}
+    {#    <table class="table">#}
+    {#        <thead>#}
+    {#        <tr>#}
+    {#            <th></th>#}
+    {#            <th>Old Account</th>#}
+    {#            <th>Total</th>#}
+    {#        </tr>#}
+    {#        </thead>#}
+    {#        <tbody>#}
+    {#        <tr>#}
+    {#            <th></th>#}
+    {#            <th>{{ seller.old_account }}</th>#}
+    {#            <th id="total">{{ total }}</th>#}
+    {#        </tr>#}
+    {#        </tbody>#}
+    {#    </table>#}
 
     <style>
         #div_id_image {
@@ -254,4 +254,21 @@
             });
         });
     </script>
+
+
+    <style>
+        #view {
+            flex: 0 0 75%;
+            max-width: 75%;
+        }
+
+        @media print {
+            #view {
+                flex: unset;
+                max-width: unset;
+                width: 100% !important;
+                display: block
+            }
+        }
+    </style>
 {% endblock %}
