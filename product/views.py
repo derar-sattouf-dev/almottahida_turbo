@@ -16,6 +16,7 @@ from product.models import *
 from turbo.settings import LOGIN_URL
 from django.core.serializers import serialize
 from django.core import serializers
+import urllib.parse
 
 
 # Categories
@@ -791,6 +792,8 @@ def all_reports(request):
 
 
 def remote_seller_invoices(request, name):
+    name = urllib.parse.unquote(name)
+
     invoices = Invoice.objects.filter(seller__name=name)
     for invoice in invoices:
         invoice.discount = float(format(invoice.discount, ".2f"))
@@ -801,6 +804,8 @@ def remote_seller_invoices(request, name):
 
 
 def remote_seller_payments(request, name):
+    name = urllib.parse.unquote(name)
+
     payments = InvoicePayment.objects.filter(seller__name=name)
     for payment in payments:
         payment.amount = payment.amount / payment.rate
