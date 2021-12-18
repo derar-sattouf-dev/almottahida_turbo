@@ -186,12 +186,14 @@
                     let invoice = data[i]
                     let type = invoice.fields.type
                     let total = parseFloat(invoice.fields.total)
+                    let discount = parseFloat(invoice.fields.discount)
                     let nowTotal = parseFloat($("#total").text())
                     if (type === "Purchase") {
                         nowTotal -= total
                     } else {
                         nowTotal += total
                     }
+                    nowTotal -= discount
                     $("#total").text(nowTotal)
                     let d = invoice.fields.date_added
                     let bigd = new Date(d)
