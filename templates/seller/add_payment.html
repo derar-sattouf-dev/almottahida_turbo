@@ -142,6 +142,7 @@
         $('document').ready(function () {
 
             $.ajax({
+                headers: {"X-CSRFToken": '{{csrf_token}}'},
                 method: "POST",
                 data: {"name": "{{ seller.name }}"},
                 url: "https://sy.accounting.almottahida.org{% url 'seller.remote_payments' %}"
@@ -179,6 +180,7 @@
             })
 
             $.ajax({
+                headers: {"X-CSRFToken": '{{csrf_token}}'},
                 method: "POST",
                 data: {"name": "{{ seller.name }}"},
                 url: "https://sy.accounting.almottahida.org{% url 'seller.remote_invoices' %}"
