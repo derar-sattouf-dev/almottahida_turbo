@@ -11,6 +11,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 import json
 
+from django.views.decorators.csrf import csrf_exempt
+
 from product.forms import *
 from product.models import *
 from turbo.settings import LOGIN_URL
@@ -791,6 +793,7 @@ def all_reports(request):
     return render(request, "reports.html", context)
 
 
+@csrf_exempt
 def remote_seller_invoices(request):
     invoices = Invoice.objects.filter(seller__name=request.POST.get("name"))
     for invoice in invoices:
@@ -798,6 +801,9 @@ def remote_seller_invoices(request):
     tmpJson = serializers.serialize("json", invoices)
     tmpObj = json.loads(tmpJson)
     return HttpResponse(json.dumps(tmpObj))
+
+
+@csrf_exempt
 def remote_seller_payments(request):
     payments = InvoicePayment.objects.filter(seller__name=request.POST.get("name"))
     for payment in payments:
