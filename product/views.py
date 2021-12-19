@@ -791,25 +791,17 @@ def all_reports(request):
     return render(request, "reports.html", context)
 
 
-def remote_seller_invoices(request, name):
-    name = urllib.parse.unquote(name)
-
-    invoices = Invoice.objects.filter(seller__name=name)
+def remote_seller_invoices(request):
+    invoices = Invoice.objects.filter(seller__name=request.POST.get("name"))
     for invoice in invoices:
         invoice.discount = float(format(invoice.discount, ".2f"))
-
     tmpJson = serializers.serialize("json", invoices)
     tmpObj = json.loads(tmpJson)
     return HttpResponse(json.dumps(tmpObj))
-
-
-def remote_seller_payments(request, name):
-    name = urllib.parse.unquote(name)
-
-    payments = InvoicePayment.objects.filter(seller__name=name)
+def remote_seller_payments(request):
+    payments = InvoicePayment.objects.filter(seller__name=request.POST.get("name"))
     for payment in payments:
         payment.amount = payment.amount / payment.rate
-
     tmpJson = serializers.serialize("json", payments)
     tmpObj = json.loads(tmpJson)
     return HttpResponse(json.dumps(tmpObj))
