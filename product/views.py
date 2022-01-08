@@ -637,7 +637,6 @@ def return_invoice(request, pk):
         invoice.seller = se
         invoice.worker = wo
         invoice.total = 0
-        invoice.save()
         for invoiceProduct in invoiceProducts:
             invoice.total += invoiceProduct["total"]
             ip = InvoiceProduct()
@@ -658,7 +657,9 @@ def return_invoice(request, pk):
                 product.quantity = product.quantity - float(invoiceProduct["quantity"])
                 product.extra_quantity = product.extra_quantity - float(invoiceProduct["extra_quantity"])
             product.save()
-            invoice.save()
+        if old_type == "Purchase":
+            invoice.total = -invoice.total
+        invoice.save()
         return HttpResponse(invoice.total)
 
 

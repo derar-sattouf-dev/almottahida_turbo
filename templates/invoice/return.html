@@ -228,6 +228,7 @@
                 save() {
                     this.loading = true
                     this.finalData["products"] = this.products
+
                     var data = JSON.stringify(this.finalData)
                     var form = new FormData()
                     form.append("data", data)
@@ -237,7 +238,7 @@
                         data: form,
                         headers: {"X-CSRFToken": '{{csrf_token}}'}
                     }).then((r) => {
-                        window.location.href = "{% url 'invoice.view.last' %}"
+                        {#window.location.href = "{% url 'invoice.view.last' %}"#}
                     })
                 }
             }
