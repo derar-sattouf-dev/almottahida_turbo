@@ -67,3 +67,9 @@ class InvoiceForm(ModelForm):
     class Meta:
         model = Invoice
         fields = ["discount", "discount_reason", "image"]
+
+
+class SellerDiscountForm(ModelForm):
+    class Meta:
+        model = SellerDiscount
+        fields = ["amount", "seller"]

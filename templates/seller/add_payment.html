@@ -98,6 +98,16 @@
                                 <td>{{ payment.add_date|date:"d/m/Y" }}</td>
                             </tr>
                         {% endfor %}
+                        {% for discount in discounts %}
+                            <tr class="sortable">
+                                <td>#{{ discount.pk }}</td>
+                                <td style="color:green;font-weight: 700">Special Discount</td>
+                                <td>$</td>
+                                <td>{{ discount.amount }}</td>
+                                <td>---</td>
+                                <td>{{ discount.add_date|date:"d/m/Y" }}</td>
+                            </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>

@@ -6,6 +6,7 @@ urlpatterns = [
     path("category/", views.all_categories, name='category.all'),
     path("category/<int:pk>/products", views.category_products, name='category.products'),
     path("seller/", views.all_sellers, name='seller.all'),
+    path("seller/discount", views.seller_discount, name='seller.discount'),
     path("seller/<int:pk>/add_payment", views.add_seller_payment, name='seller.add_payment'),
     path("seller/remote_invoices", views.remote_seller_invoices, name='seller.remote_invoices'),
     path("seller/remote_payments", views.remote_seller_payments, name='seller.remote_payments'),

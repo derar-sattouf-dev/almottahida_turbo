@@ -164,11 +164,15 @@ def add_seller_payment(request, pk):
         else:
             total_payments += payment.amount / payment.rate
     seller = Seller.objects.get(pk=pk)
-    total = total_invoices - total_payments + seller.old_account
+    total_discounts = 0
+    discounts = SellerDiscount.objects.filter(seller=seller)
+    for discount in discounts:
+        total_discounts += discount.amount
+    total = total_invoices - total_payments + seller.old_account - total_discounts
 
     total = format(total, ".2f")
     return render(request, "seller/add_payment.html",
-                  {"form": form, "invoices": invoices, "payments": payments, "seller": seller,
+                  {"form": form, "invoices": invoices, "payments": payments, "discounts": discounts, "seller": seller,
                    "total_invoices": total_invoices, "total_payments": total_payments, "total": total})
 
 
@@ -819,3 +823,18 @@ def remote_seller_payments(request):
     tmpJson = serializers.serialize("json", payments)
     tmpObj = json.loads(tmpJson)
     return HttpResponse(json.dumps(tmpObj))
+
+
+@login_required(login_url=LOGIN_URL)
+def seller_discount(request):
+    sellers = Seller.objects.all()
+    if request.method == 'POST':
+        form = SellerDiscountForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request, messages.SUCCESS, 'Discount added successfully.')
+            return redirect("invoice.all")
+    else:
+        form = SellerDiscountForm
+
+    return render(request, "seller/discount.html", {'sellers': sellers, "form": form})
