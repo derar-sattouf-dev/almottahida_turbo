@@ -73,29 +73,29 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
-    'default': {
-        'ENGINE': 'mysql.connector.django',
-        'NAME': 'acccounting',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'autocommit': True,
-        },
-    }
-    # This is master
     # 'default': {
     #     'ENGINE': 'mysql.connector.django',
-    #     'NAME': 'almomjgn_accounting_database',
-    #     'USER': 'almomjgn_accounting_user',
-    #     'PASSWORD': 'TITNDPildvm7050@!',
+    #     'NAME': 'acccounting',
+    #     'USER': 'root',
+    #     'PASSWORD': '',
     #     'HOST': 'localhost',
     #     'PORT': '3306',
     #     'OPTIONS': {
     #         'autocommit': True,
     #     },
     # }
+    # This is master
+    'default': {
+        'ENGINE': 'mysql.connector.django',
+        'NAME': 'almomjgn_accounting_database',
+        'USER': 'almomjgn_accounting_user',
+        'PASSWORD': 'TITNDPildvm7050@!',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'OPTIONS': {
+            'autocommit': True,
+        },
+    }
     # THis is syrian
     # 'default': {
     #     'ENGINE': 'mysql.connector.django',
