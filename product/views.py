@@ -139,8 +139,15 @@ def add_seller_payment(request, pk):
             currency_value += amount
         currency.value = currency_value
         currency.save()
-    invoices = Invoice.objects.filter(seller_id=pk)
-    payments = InvoicePayment.objects.filter(seller_id=pk)
+    if request.GET.get("from") and request.GET.get("to"):
+        _from = request.GET.get("from")
+        # return HttpResponse(_from)
+        _to = request.GET.get("to")
+        invoices = Invoice.objects.filter(seller_id=pk, date_added__range=(_from, _to))
+        payments = InvoicePayment.objects.filter(seller_id=pk, add_date__range=(_from, _to))
+    else:
+        invoices = Invoice.objects.filter(seller_id=pk)
+        payments = InvoicePayment.objects.filter(seller_id=pk)
 
     total_invoices = 0
     for invoice in invoices:
@@ -157,7 +164,7 @@ def add_seller_payment(request, pk):
         else:
             total_payments += payment.amount / payment.rate
     seller = Seller.objects.get(pk=pk)
-    total = total_invoices - total_payments + seller.old_account
+    total = total_invoices - total_payments
 
     total = format(total, ".2f")
     return render(request, "seller/add_payment.html",
