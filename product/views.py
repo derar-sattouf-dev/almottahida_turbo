@@ -1,24 +1,21 @@
 import datetime
-import json
-import html
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core import serializers
 from django.core.paginator import PageNotAnInteger, Paginator, EmptyPage
-from django.db.models import Q, Prefetch
+from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 import json
-
+# import qrcode
+# import qrcode.image.svg
+# from io import BytesIO
 from django.views.decorators.csrf import csrf_exempt
-
+from segno import helpers
 from product.forms import *
 from product.models import *
 from turbo.settings import LOGIN_URL
-from django.core.serializers import serialize
 from django.core import serializers
-import urllib.parse
 
 
 # Categories
@@ -169,8 +166,8 @@ def add_seller_payment(request, pk):
     for discount in discounts:
         total_discounts += discount.amount
     total = total_invoices - total_payments + seller.old_account - total_discounts
-
     total = format(total, ".2f")
+
     return render(request, "seller/add_payment.html",
                   {"form": form, "invoices": invoices, "payments": payments, "discounts": discounts, "seller": seller,
                    "total_invoices": total_invoices, "total_payments": total_payments, "total": total})
@@ -452,7 +449,13 @@ def view_invoice(request, pk):
     invoice.total -= invoice.discount
     invoice.total = format(invoice.total, ".2f")
     invoice.discount = format(invoice.discount, ".2f")
-    return render(request, "invoice/view.html", {"invoice": invoice, "products": products})
+    qrcode = helpers.make_mecard(
+        country="Tripoli",
+        name='Almottahida',
+        phone=("+96181444944", "+96181444934", "+96181444954", "+96181444964", "+96181444974", "+96181444984"),
+        email='contact@almottahida.org',
+        url=['almottahida.org'])
+    return render(request, "invoice/view.html", {"invoice": invoice, "products": products, "qr": qrcode.svg_inline()})
 
 
 @login_required(login_url=LOGIN_URL)
