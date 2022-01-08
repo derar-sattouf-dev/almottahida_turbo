@@ -124,3 +124,9 @@ class DailyBoxOperation(models.Model):
     operation = models.CharField(choices=OPERATIONS, max_length=5, default=OPERATIONS.Give)
     reason = models.CharField(max_length=255)
     add_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+
+
+class SellerDiscount(models.Model):
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE, )
+    amount = models.FloatField()
+    add_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
