@@ -137,36 +137,78 @@ def add_seller_payment(request, pk):
         currency.value = currency_value
         currency.save()
     if request.GET.get("from") and request.GET.get("to"):
+        seller = Seller.objects.get(pk=pk)
         _from = request.GET.get("from")
-        # return HttpResponse(_from)
         _to = request.GET.get("to")
         invoices = Invoice.objects.filter(seller_id=pk, date_added__range=(_from, _to))
         payments = InvoicePayment.objects.filter(seller_id=pk, add_date__range=(_from, _to))
+        total_invoices = 0
+        total_payments = 0
+        total_discounts = 0
+        for invoice in invoices:
+            invoice.discount = float(format(invoice.discount, ".2f"))
+            if invoice.type == "Sale":
+                total_invoices += (invoice.total - invoice.discount)
+            else:
+                total_invoices -= (invoice.total - invoice.discount)
+        for payment in payments:
+            if payment.operation == "Give":
+                total_payments -= payment.amount / payment.rate
+            else:
+                total_payments += payment.amount / payment.rate
+        discounts = SellerDiscount.objects.filter(seller=seller)
+        for discount in discounts:
+            total_discounts += discount.amount
+
+        invoices_before_from = Invoice.objects.filter(seller_id=pk,
+                                                      date_added__range=(datetime.date(2000, 2, 2), _from))
+        payments_before_from = InvoicePayment.objects.filter(seller_id=pk,
+                                                             add_date__range=(datetime.date(2000, 2, 2), _from))
+        discounts_before_from = SellerDiscount.objects.filter(seller=seller)
+        total_old_invoices = 0
+        total_old_payments = 0
+        total_old_discounts = 0
+        for discount in discounts_before_from:
+            total_old_discounts += discount.amount
+
+        for invoice in invoices_before_from:
+            invoice.discount = float(format(invoice.discount, ".2f"))
+            if invoice.type == "Sale":
+                total_old_invoices += (invoice.total - invoice.discount)
+            else:
+                total_old_invoices -= (invoice.total - invoice.discount)
+        for payment in payments_before_from:
+            if payment.operation == "Give":
+                total_old_payments -= payment.amount / payment.rate
+            else:
+                total_old_payments += payment.amount / payment.rate
+        seller.old_account = total_old_invoices - total_old_payments + seller.old_account - total_old_discounts
+        total = total_invoices - total_payments + seller.old_account - total_discounts
+        seller.old_account = format(seller.old_account, ".2f")
+        total = format(total, ".2f")
     else:
         invoices = Invoice.objects.filter(seller_id=pk)
         payments = InvoicePayment.objects.filter(seller_id=pk)
-
-    total_invoices = 0
-    for invoice in invoices:
-        invoice.discount = float(format(invoice.discount, ".2f"))
-        if invoice.type == "Sale":
-            total_invoices += (invoice.total - invoice.discount)
-        else:
-            total_invoices -= (invoice.total - invoice.discount)
-
-    total_payments = 0
-    for payment in payments:
-        if payment.operation == "Give":
-            total_payments -= payment.amount / payment.rate
-        else:
-            total_payments += payment.amount / payment.rate
-    seller = Seller.objects.get(pk=pk)
-    total_discounts = 0
-    discounts = SellerDiscount.objects.filter(seller=seller)
-    for discount in discounts:
-        total_discounts += discount.amount
-    total = total_invoices - total_payments + seller.old_account - total_discounts
-    total = format(total, ".2f")
+        total_invoices = 0
+        for invoice in invoices:
+            invoice.discount = float(format(invoice.discount, ".2f"))
+            if invoice.type == "Sale":
+                total_invoices += (invoice.total - invoice.discount)
+            else:
+                total_invoices -= (invoice.total - invoice.discount)
+        total_payments = 0
+        for payment in payments:
+            if payment.operation == "Give":
+                total_payments -= payment.amount / payment.rate
+            else:
+                total_payments += payment.amount / payment.rate
+        seller = Seller.objects.get(pk=pk)
+        total_discounts = 0
+        discounts = SellerDiscount.objects.filter(seller=seller)
+        for discount in discounts:
+            total_discounts += discount.amount
+        total = total_invoices - total_payments + seller.old_account - total_discounts
+        total = format(total, ".2f")
 
     return render(request, "seller/add_payment.html",
                   {"form": form, "invoices": invoices, "payments": payments, "discounts": discounts, "seller": seller,
