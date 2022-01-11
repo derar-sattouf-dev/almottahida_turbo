@@ -2,6 +2,25 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+
+    <div style="display: none">
+        <table>
+            <tbody>
+            {% for invoice in invoices %}
+                {% for product in invoice.invoiceproduct_set.all %}
+                    <tr class="inv{{ invoice.id }}">
+                        <td>{{ product.product.id }}</td>
+                        <td width="250px">{{ product.product.name }}</td>
+                        <td>{{ product.quantity }}</td>
+                        <td>{{ product.extra_quantity }}</td>
+                        <td>{{ product.piece_price }}</td>
+                        <td>{{ product.total }}</td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <div class="row ">
         <div class="col-3 d-print-none">
             <div class="card">
@@ -62,30 +81,12 @@
                         {% for invoice in invoices %}
                             <tr class="sortable" onclick="clicked({{ invoice.id }})" id="{{ invoice.id }}">
                                 <td><a href="{% url 'invoice.view' invoice.pk %}">#{{ invoice.pk }}</a></td>
-                                <td>Invoice({{ invoice.type }})</td>
+                                <td style="width: 250px">Invoice({{ invoice.type }})</td>
                                 <td>{{ invoice.total }}{{ invoice.currency.name }}</td>
                                 <td>---</td>
                                 <td>{{ invoice.discount }}{{ invoice.currency.name }}</td>
                                 <td>{{ invoice.date_added|date:"d/m/Y" }}</td>
                             </tr>
-                            <tr class="ss inv{{ invoice.id }}" style="background:#3cbc8d">
-                                <th>Name</th>
-                                <th>Quantity</th>
-                                <th>Extra</th>
-                                <th>Piece Price</th>
-                                <th>Total</th>
-                                <th>--</th>
-                            </tr>
-                            {% for product in invoice.invoiceproduct_set.all %}
-                                <tr class="ss inv{{ invoice.id }}">
-                                    <td width="150px">{{ product.product.name }}</td>
-                                    <td>{{ product.quantity }}</td>
-                                    <td>{{ product.extra_quantity }}</td>
-                                    <td>{{ product.piece_price }}</td>
-                                    <td>{{ product.total }}</td>
-                                    <td>-</td>
-                                </tr>
-                            {% endfor %}
 
                         {% endfor %}
                         {% for payment in payments %}
@@ -108,6 +109,25 @@
                                 <td>{{ discount.add_date|date:"d/m/Y" }}</td>
                             </tr>
                         {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card mt-4">
+                <div class="card-header">Other Statements</div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Type</th>
+                            <th>Total</th>
+                            <th>Currency Rate</th>
+                            <th>Discount</th>
+                            <th>Date</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbody">
                         </tbody>
                     </table>
                 </div>
@@ -145,19 +165,25 @@
             var tbody = document.querySelector("#results");
             // get trs as array for ease of use
             var rows = [].slice.call(tbody.querySelectorAll(".sortable"));
-            console.log(rows)
-            console.log("_________-")
             rows.sort(function (a, b) {
                 return convertDate(a.cells[5].innerHTML) - convertDate(b.cells[5].innerHTML);
             });
-            console.log(rows)
             rows.forEach(function (v) {
                 tbody.appendChild(v); // note that .appendChild() *moves* elements
             });
         }
 
         function clicked(el) {
-            $(".inv" + el).toggle()
+            if ($(".invt" + el).length == 0) {
+                let html = " "
+                $(".inv" + el).each(function () {
+                    html += "<tr class='invt" + el + "'>" + $(this).html() + "</tr>"
+                })
+                $(event.target).parent().after(html)
+            } else {
+                document.querySelectorAll(".invt" + el).forEach(el => el.remove());
+            }
+
         }
 
         sortByDate()
@@ -177,7 +203,6 @@
                 var html = ""
                 for (let i = 0; i < data.length; i++) {
                     let invoice = data[i]
-
                     let type = invoice.fields.operation
                     let total = parseFloat(invoice.fields.amount)
                     let nowTotal = parseFloat($("#total").text())
@@ -187,15 +212,12 @@
                         nowTotal -= total
                     }
                     $("#total").text(nowTotal)
-
                     let d = invoice.fields.add_date
                     let bigd = new Date(d)
                     html += "<tr>"
                     html += "<td>" + invoice.pk + "</td>"
                     html += "<td>" + "Payment(" + invoice.fields.operation + ")" + "</td>"
                     html += "<td>" + invoice.fields.amount + "$" + "</td>"
-
-
                     html += "<td>" + "----" + "</td>"
                     html += "<td>" + "----" + "</td>"
                     html += "<td>" + bigd.getDay() + "-" + bigd.getMonth() + "-" + bigd.getFullYear() + "</td>"
@@ -212,7 +234,6 @@
             }).done(function (data) {
                 data = JSON.parse(data)
                 var html = ""
-                html += "<tr><th>Sy</th></tr>"
                 for (let i = 0; i < data.length; i++) {
                     let invoice = data[i]
                     let type = invoice.fields.type
@@ -231,7 +252,6 @@
                     html += "<tr>"
                     html += "<td>" + invoice.pk + "</td>"
                     html += "<td>" + "Invoice(" + invoice.fields.type + ")" + "</td>"
-
                     html += "<td>" + invoice.fields.total + "</td>"
                     html += "<td>" + "----" + "</td>"
                     html += "<td>" + invoice.fields.discount + "</td>"
@@ -304,7 +324,7 @@
             }
         }
 
-        .ss {
+        .tmp {
             display: none;
         }
     </style>
