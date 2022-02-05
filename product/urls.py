@@ -33,6 +33,7 @@ urlpatterns = [
     path("product/get_currencies/", views.get_currencies, name='product.get_currencies'),
     path("product/get_sellers/", views.get_sellers, name='product.get_sellers'),
     path("product/get_workers/", views.get_workers, name='product.get_workers'),
+    path("product/report/<int:pk>/", views.product_report, name='product.report'),
     path("product/get_invoice_products/<int:pk>", views.get_invoice_products, name='product.get_invoice_products'),
     path("product/get_quantity_types/", views.get_quantity_types, name='product.get_quantity_types'),
     path("", views.all_products, name='product.all'),

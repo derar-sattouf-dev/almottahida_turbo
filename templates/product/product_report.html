@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    Selled (<span id="total" style="font-weight: bold"></span>)
+                    <span> / Grand Saled quantity  (<span id="gr"></span>) </span>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Seller</th>
+                            <th>Quantity</th>
+                            <th>Piece Price</th>
+                            <th>Total Saled</th>
+                            <th>Total Stock</th>
+                            <th>Earned</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for invoice in si %}
+                            <tr>
+                                <td>{{ invoice.seller }}</td>
+                                {% for product in invoice.invoiceproduct_set.all %}
+                                    {% if product.product.pk == bproduct.id %}
+                                        <td>{{ product.quantity }}</td>
+                                        <td>{{ product.piece_price }}</td>
+                                        <td>{% widthratio product.piece_price 1 product.quantity %}</td>
+                                        <td>{% widthratio bproduct.stock_price 1 product.quantity %}</td>
+                                        <td class="earn" q="{{ product.quantity }}" t="{% widthratio product.piece_price 1 product.quantity %}"
+                                            s="{% widthratio bproduct.stock_price 1 product.quantity %}"></td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    Purchased
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Seller</th>
+                            <th>Piece Price</th>
+                            <th>Total</th>
+                            <th>Quantity</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for invoice in pi %}
+                            <tr>
+                                <td>{{ invoice.seller }}</td>
+                                {% for product in invoice.invoiceproduct_set.all %}
+                                    {% if product.product.pk == bproduct.id %}
+                                        <td>{{ product.piece_price }}</td>
+                                        <td>{% widthratio product.piece_price 1 product.quantity %}</td>
+                                        <td>{{ product.quantity }}</td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            t = 0
+            q = 0
+            $.each($(".earn"), function () {
+                var a = $(this).attr("t")
+                var b = $(this).attr("s")
+                var quan = $(this).attr("q")
+                $(this).text(a - b)
+                t += (a - b)
+                q += parseFloat(quan)
+            })
+            $("#total").text(t + '$')
+            $("#gr").text(q)
+        })
+    </script>
+{% endblock %}

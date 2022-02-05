@@ -140,8 +140,16 @@ def add_seller_payment(request, pk):
         seller = Seller.objects.get(pk=pk)
         _from = request.GET.get("from")
         _to = request.GET.get("to")
+        #
+        apt = 0
+        apg = 0
+        aip = 0
+        ais = 0
+
+        #
         invoices = Invoice.objects.filter(seller_id=pk, date_added__range=(_from, _to))
         payments = InvoicePayment.objects.filter(seller_id=pk, add_date__range=(_from, _to))
+
         discounts = SellerDiscount.objects.filter(seller=seller)
         total_invoices = 0
         total_payments = 0
@@ -150,13 +158,22 @@ def add_seller_payment(request, pk):
             invoice.discount = float(format(invoice.discount, ".2f"))
             if invoice.type == "Sale":
                 total_invoices += (invoice.total - invoice.discount)
+                ais += (invoice.total - invoice.discount)
+
             else:
                 total_invoices -= (invoice.total - invoice.discount)
+                if invoice.type == "Purchase":
+                    aip += (invoice.total - invoice.discount)
+
         for payment in payments:
             if payment.operation == "Give":
                 total_payments -= payment.amount / payment.rate
+                apg += payment.amount / payment.rate
+
             else:
                 total_payments += payment.amount / payment.rate
+                apt += payment.amount / payment.rate
+
         for discount in discounts:
             total_discounts += discount.amount
 
@@ -182,6 +199,10 @@ def add_seller_payment(request, pk):
         seller.old_account = format(seller.old_account, ".2f")
         total = format(total, ".2f")
     else:
+        apt = 0
+        apg = 0
+        aip = 0
+        ais = 0
         invoices = Invoice.objects.filter(seller_id=pk)
         payments = InvoicePayment.objects.filter(seller_id=pk)
         total_invoices = 0
@@ -189,14 +210,21 @@ def add_seller_payment(request, pk):
             invoice.discount = float(format(invoice.discount, ".2f"))
             if invoice.type == "Sale":
                 total_invoices += (invoice.total - invoice.discount)
+                ais += (invoice.total - invoice.discount)
+
             else:
+                if invoice.type == "Purchase":
+                    aip += (invoice.total - invoice.discount)
+
                 total_invoices -= (invoice.total - invoice.discount)
         total_payments = 0
         for payment in payments:
             if payment.operation == "Give":
                 total_payments -= payment.amount / payment.rate
+                apg += payment.amount / payment.rate
             else:
                 total_payments += payment.amount / payment.rate
+                apt += payment.amount / payment.rate
         seller = Seller.objects.get(pk=pk)
         total_discounts = 0
         discounts = SellerDiscount.objects.filter(seller=seller)
@@ -207,7 +235,12 @@ def add_seller_payment(request, pk):
 
     return render(request, "seller/add_payment.html",
                   {"form": form, "invoices": invoices, "payments": payments, "discounts": discounts, "seller": seller,
-                   "total_invoices": total_invoices, "total_payments": total_payments, "total": total})
+                   "total_invoices": total_invoices, "total_payments": total_payments, "total": total,
+                   "apt": apt,
+                   "apg": apg,
+                   "aip": aip,
+                   "ais": ais,
+                   })
 
 
 @login_required(login_url=LOGIN_URL)
@@ -225,9 +258,15 @@ def daily_box(request):
         currency.value = currency_value
         currency.save()
         form.save()
-    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
-    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
-    ops = DailyBoxOperation.objects.filter(add_date__range=(today_min, today_max)).order_by("-pk")
+
+    if request.GET.get("from") is None:
+        today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+        today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+        ops = DailyBoxOperation.objects.filter(add_date__range=(today_min, today_max)).order_by("-pk")
+    else:
+        _from = request.GET.get("from")
+        _to = request.GET.get("to")
+        ops = DailyBoxOperation.objects.filter(add_date__range=(_from, _to))
     return render(request, "box/daily_box.html",
                   {"form": form, "ops": ops})
     pass
@@ -364,6 +403,8 @@ def all_currencies(request):
     else:
         form = CurrencyForm()
     currencies = Currency.objects.all()
+    for c in currencies:
+        c.value = format(c.value, ".2f")
     page = request.GET.get('page', 1)
     paginator = Paginator(currencies, 15)
     try:
@@ -878,3 +919,16 @@ def seller_discount(request):
         form = SellerDiscountForm
 
     return render(request, "seller/discount.html", {'sellers': sellers, "form": form})
+
+
+@login_required(login_url=LOGIN_URL)
+def product_report(request, pk):
+    product = Product.objects.get(pk=pk)
+
+    si = Invoice.objects.filter(invoiceproduct__product=product, type__exact="Sale")
+    pi = Invoice.objects.filter(invoiceproduct__product=product, type__exact="Purchase")
+    return render(request, "product/product_report.html", {
+        "si": si,
+        "bproduct": product,
+        "pi": pi,
+    })

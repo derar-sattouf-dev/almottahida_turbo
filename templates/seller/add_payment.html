@@ -148,6 +148,32 @@
                 </tr>
                 </tbody>
             </table>
+            <div class="card d-print-none">
+                <div class="card-header">
+                    All Transactions
+                </div>
+                <div class="card-body">
+                    <table class="table ">
+                        <thead>
+                        <tr>
+                            <th>All Saled Invoices</th>
+                            <th>All Purchase Invoices</th>
+                            <th>All Give Payments</th>
+                            <th>All Take Payments</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>{{ ais }}</td>
+                            <td>{{ aip }}</td>
+                            <td>{{ apg }}</td>
+                            <td>{{ apt }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
         </div>
     </div>
     <style>
@@ -175,9 +201,9 @@
 
         function clicked(el) {
             if ($(".invt" + el).length == 0) {
-                let html = " "
+                let html = "<tr class='invt" + el + "' style='background: #3cbc8d'> <td>#</td> <td>Name</td><td>Quantity</td><td>Extra Quantity</td><td>Piece price</td><td>Total</td></tr>"
                 $(".inv" + el).each(function () {
-                    html += "<tr class='invt" + el + "'>" + $(this).html() + "</tr>"
+                    html += "<tr style='background: #3cbc8d' class='invt" + el + "'>" + $(this).html() + "</tr>"
                 })
                 $(event.target).parent().after(html)
             } else {

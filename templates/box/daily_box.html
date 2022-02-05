@@ -2,6 +2,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+
     <div class="row">
         <div class="col-4">
             <div class="card">
@@ -22,6 +23,27 @@
             </div>
         </div>
         <div class="col-8">
+            <form method="get" action="{% url 'box.daily' %}">
+                <div class="row ">
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label for="from">Form</label>
+                            <input type="date" id="from" name="from" class="df form-control"
+                                   value="{{ request.GET.from }}">
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label for="to">To</label>
+                            <input type="date" name="to" id="to" class="df form-control"
+                                   value="{{ request.GET.to }}">
+                        </div>
+                    </div>
+                    <div class="col-4 d-print-none" style="margin-top: 30px">
+                        <button class="btn btn-primary">Get History</button>
+                    </div>
+                </div>
+            </form>
             <div class="card">
                 <div class="card-header">
                     Today's Operations
@@ -42,7 +64,7 @@
                                 <td>
                                     {% if op.operation == "Give" %}
                                         <h5 class=" text-danger">
-                                        -
+                                            -
                                             {{ op.amount }}
                                         </h5>
 
