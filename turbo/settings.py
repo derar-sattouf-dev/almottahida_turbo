@@ -1,4 +1,3 @@
-
 from pathlib import Path
 import os
 
@@ -84,10 +83,10 @@ DATABASES = {
     #         'autocommit': True,
     #     },
     # }
-    # This is master
+    # hn
     'default': {
         'ENGINE': 'mysql.connector.django',
-        'NAME': 'almomjgn_accounting_database',
+        'NAME': 'almomjgn_accounting_database_3',
         'USER': 'almomjgn_accounting_user',
         'PASSWORD': 'TITNDPildvm7050@!',
         'HOST': 'localhost',
@@ -96,6 +95,18 @@ DATABASES = {
             'autocommit': True,
         },
     }
+    # This is master
+    # 'default': {
+    #     'ENGINE': 'mysql.connector.django',
+    #     'NAME': 'almomjgn_accounting_database',
+    #     'USER': 'almomjgn_accounting_user',
+    #     'PASSWORD': 'TITNDPildvm7050@!',
+    #     'HOST': 'localhost',
+    #     'PORT': '3306',
+    #     'OPTIONS': {
+    #         'autocommit': True,
+    #     },
+    # }
     # THis is syrian
     # 'default': {
     #     'ENGINE': 'mysql.connector.django',
