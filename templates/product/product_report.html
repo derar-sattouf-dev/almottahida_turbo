@@ -13,9 +13,9 @@
                         <tr>
                             <th>Seller</th>
                             <th>Quantity</th>
-                            <th>Piece Price</th>
-                            <th>Total Saled</th>
-                            <th>Total Stock</th>
+                            <th>Extra Quantity</th>
+                            <th>Piece Price From Stock</th>
+                            <th>Piece Price Sale</th>
                             <th>Earned</th>
                         </tr>
                         </thead>
@@ -26,11 +26,16 @@
                                 {% for product in invoice.invoiceproduct_set.all %}
                                     {% if product.product.pk == bproduct.id %}
                                         <td>{{ product.quantity }}</td>
+                                        <td>{{ product.extra_quantity }}</td>
+                                        <td>{{ bproduct.stock_price }}</td>
                                         <td>{{ product.piece_price }}</td>
-                                        <td>{% widthratio product.piece_price 1 product.quantity %}</td>
-                                        <td>{% widthratio bproduct.stock_price 1 product.quantity %}</td>
-                                        <td class="earn" q="{{ product.quantity }}" t="{% widthratio product.piece_price 1 product.quantity %}"
-                                            s="{% widthratio bproduct.stock_price 1 product.quantity %}"></td>
+                                        <td class="earn" stock-price="{{ bproduct.price }}"
+                                            piece-price="{{ product.piece_price }}"
+                                            extra-quantity="{{ product.extra_quantity }}"
+                                            quantity="{{ product.quantity }}"
+                                            quantity-type-value="{{ bproduct.quantity_type.value }}">
+
+                                        </td>
                                     {% endif %}
                                 {% endfor %}
                             </tr>
@@ -81,18 +86,26 @@
 
     <script>
         $(document).ready(function () {
-            t = 0
-            q = 0
+            let total = 0
+            let totalQuantity = 0
             $.each($(".earn"), function () {
-                var a = $(this).attr("t")
-                var b = $(this).attr("s")
-                var quan = $(this).attr("q")
-                $(this).text(a - b)
-                t += (a - b)
-                q += parseFloat(quan)
+                let stock_price = parseFloat($(this).attr("stock-price"))
+                let piece_price = parseFloat($(this).attr("piece-price"))
+                let extra_quantity = parseFloat($(this).attr("extra-quantity"))
+                let quantity = parseFloat($(this).attr("quantity"))
+                let quantity_type_value = parseFloat($(this).attr("quantity-type-value"))
+                {#    #}
+                let totalPieceQuantity = (quantity * quantity_type_value) + extra_quantity
+                let totalPriceFromStock = totalPieceQuantity * stock_price
+                let totalPriceFromSale = totalPieceQuantity * piece_price
+                let earn = totalPriceFromStock - totalPriceFromSale
+                $(this).text(earn + "$")
+
+                total += earn
+                totalQuantity += (totalPieceQuantity / quantity_type_value)
             })
-            $("#total").text(t + '$')
-            $("#gr").text(q)
+            $("#total").text(total + '$')
+            $("#gr").text(totalQuantity)
         })
     </script>
 {% endblock %}

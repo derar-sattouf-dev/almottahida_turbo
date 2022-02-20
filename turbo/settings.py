@@ -72,17 +72,17 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
-    # 'default': {
-    #     'ENGINE': 'mysql.connector.django',
-    #     'NAME': 'nm',
-    #     'USER': 'root',
-    #     'PASSWORD': '',
-    #     'HOST': 'localhost',
-    #     'PORT': '3306',
-    #     'OPTIONS': {
-    #         'autocommit': True,
-    #     },
-    # }
+    'default': {
+        'ENGINE': 'mysql.connector.django',
+        'NAME': 'test_almottahida',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'OPTIONS': {
+            'autocommit': True,
+        },
+    }
     # hn
     # 'default': {
     #     'ENGINE': 'mysql.connector.django',
@@ -96,17 +96,29 @@ DATABASES = {
     #     },
     # }
     # This is master
-    'default': {
-        'ENGINE': 'mysql.connector.django',
-        'NAME': 'almomjgn_accounting_database',
-        'USER': 'almomjgn_accounting_user',
-        'PASSWORD': 'TITNDPildvm7050@!',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'autocommit': True,
-        },
-    }
+    # 'default': {
+    #     'ENGINE': 'mysql.connector.django',
+    #     'NAME': 'almomjgn_accounting_database',
+    #     'USER': 'almomjgn_accounting_user',
+    #     'PASSWORD': 'TITNDPildvm7050@!',
+    #     'HOST': 'localhost',
+    #     'PORT': '3306',
+    #     'OPTIONS': {
+    #         'autocommit': True,
+    #     },
+    # }
+    # Test
+    # 'default': {
+    #     'ENGINE': 'mysql.connector.django',
+    #     'NAME': 'almomjgn_test',
+    #     'USER': 'almomjgn_accounting_user',
+    #     'PASSWORD': 'TITNDPildvm7050@!',
+    #     'HOST': 'localhost',
+    #     'PORT': '3306',
+    #     'OPTIONS': {
+    #         'autocommit': True,
+    #     },
+    # }
     # THis is syrian
     # 'default': {
     #     'ENGINE': 'mysql.connector.django',
@@ -123,7 +135,7 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
-ALLOWED_HOSTS = ["almottahida.org", "127.0.0.1", "accounting.almottahida.org", "sy.accounting.almottahida.org"]
+ALLOWED_HOSTS = ["almottahida.org", "127.0.0.1", "accounting.almottahida.org", "sy.accounting.almottahida.org","hn.almottahida.org","test.almottahida.org"]
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',

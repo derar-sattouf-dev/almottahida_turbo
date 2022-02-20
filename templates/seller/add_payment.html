@@ -218,10 +218,19 @@
             $(".parent").click(function () {
                 alert($(this).attr("id"))
             })
+            let data = {
+                "name": "{{ seller.name }}"
+            }
+            let _from = $("#from").val()
+            let _to = $("#to").val()
+            if (_from.length > 0 && _to.length > 0) {
+                data["_from"] = _from
+                data["_to"] = _to
+            }
             $.ajax({
                 headers: {"X-CSRFToken": '{{csrf_token}}'},
                 method: "POST",
-                data: {"name": "{{ seller.name }}"},
+                data: data,
                 url: "https://sy.accounting.almottahida.org{% url 'seller.remote_payments' %}"
             }).done(function (data) {
                 data = JSON.parse(data)
@@ -255,7 +264,7 @@
             $.ajax({
                 headers: {"X-CSRFToken": '{{csrf_token}}'},
                 method: "POST",
-                data: {"name": "{{ seller.name }}"},
+                data: data,
                 url: "https://sy.accounting.almottahida.org{% url 'seller.remote_invoices' %}"
             }).done(function (data) {
                 data = JSON.parse(data)

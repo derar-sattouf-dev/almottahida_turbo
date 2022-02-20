@@ -527,12 +527,20 @@ def view_invoice(request, pk):
     invoice.total -= invoice.discount
     invoice.total = format(invoice.total, ".2f")
     invoice.discount = format(invoice.discount, ".2f")
+    # master
     qrcode = helpers.make_mecard(
         country="Tripoli",
         name='Almottahida',
         phone=("+96181444944", "+96181444934", "+96181444954", "+96181444964", "+96181444974", "+96181444984"),
         email='contact@almottahida.org',
         url=['almottahida.org'])
+    # Honey
+    # qrcode = helpers.make_mecard(
+    #     country="Tripoli",
+    #     name='Almottahida',
+    #     phone=("+96181444954",),
+    #     email='contact@hn.almottahida.org',
+    #     url=['hn.almottahida.org'])
     return render(request, "invoice/view.html", {"invoice": invoice, "products": products, "qr": qrcode.svg_inline()})
 
 
@@ -722,6 +730,7 @@ def return_invoice(request, pk):
         invoice.seller = se
         invoice.worker = wo
         invoice.total = 0
+        invoice.save()
         for invoiceProduct in invoiceProducts:
             invoice.total += invoiceProduct["total"]
             ip = InvoiceProduct()
@@ -888,7 +897,13 @@ def all_reports(request):
 
 @csrf_exempt
 def remote_seller_invoices(request):
-    invoices = Invoice.objects.filter(seller__name=request.POST.get("name"))
+    seller_name = request.POST.get("name")
+    _from = request.POST.get("from")
+    _to = request.POST.get("to")
+    if _from is not None and _to is not None:
+        invoices = Invoice.objects.filter(seller__name=seller_name, date_added__range=(_from, _to))
+    else:
+        invoices = Invoice.objects.filter(seller__name=seller_name)
     for invoice in invoices:
         invoice.discount = float(format(invoice.discount, ".2f"))
     tmpJson = serializers.serialize("json", invoices)
@@ -898,7 +913,13 @@ def remote_seller_invoices(request):
 
 @csrf_exempt
 def remote_seller_payments(request):
-    payments = InvoicePayment.objects.filter(seller__name=request.POST.get("name"))
+    seller_name = request.POST.get("name")
+    _from = request.POST.get("from")
+    _to = request.POST.get("to")
+    if _from is not None and _to is not None:
+        payments = InvoicePayment.objects.filter(seller__name=seller_name, date_added__range=(_from, _to))
+    else:
+        payments = InvoicePayment.objects.filter(seller__name=seller_name)
     for payment in payments:
         payment.amount = payment.amount / payment.rate
     tmpJson = serializers.serialize("json", payments)
