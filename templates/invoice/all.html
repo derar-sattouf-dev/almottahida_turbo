@@ -6,6 +6,7 @@
         <tr>
             <th>ID</th>
             <th>Type</th>
+            <th>Old Type</th>
             <th>Date</th>
             <th>Seller</th>
             <th>Discount</th>
@@ -17,7 +18,15 @@
         {% for invoice in invoices %}
             <tr>
                 <th>#{{ invoice.pk }}</th>
+
                 <th>{{ invoice.type }}</th>
+                <th>
+                    {% if invoice.type == 'Return' %}
+                        {{ invoice.old_type }}
+                        {% else %}
+                        -
+                    {% endif %}
+                </th>
                 <th>{{ invoice.date_added|date:"Y-m-d" }}</th>
                 <th>
                     <a class="text-success"
@@ -46,7 +55,8 @@
                     <a data-toggle="tooltip" data-placement="top" title="View Invoice" class="btn btn-sm btn-success"
                        href="{% url 'invoice.view' invoice.pk %}"><i class="mdi mdi-eye"></i></a>
                     <a data-toggle="tooltip" data-placement="top" title="Seller account" class="btn btn-sm btn-warning"
-                       href="{% url 'seller.add_payment' invoice.seller.pk %}"><i class="text-white mdi mdi-account-cash"></i></a>
+                       href="{% url 'seller.add_payment' invoice.seller.pk %}"><i
+                            class="text-white mdi mdi-account-cash"></i></a>
                 </th>
             </tr>
         {% endfor %}

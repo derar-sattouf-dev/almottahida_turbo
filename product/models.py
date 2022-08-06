@@ -83,7 +83,9 @@ class Product(models.Model):
 
 class Invoice(models.Model):
     TYPE = Choices('Sale', 'Purchase', 'Return')
+    OLD_TYPE = Choices('Sale', 'Purchase')
     type = models.CharField(max_length=100, choices=TYPE, default=TYPE.Sale)
+    old_type = models.CharField(max_length=100, choices=OLD_TYPE, default='Sale')
     discount = models.FloatField(default=0)
     discount_reason = models.CharField(max_length=300, default=" ")
     earn = models.FloatField(blank=True, null=True, default=0)

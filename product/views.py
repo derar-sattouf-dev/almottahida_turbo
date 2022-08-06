@@ -215,8 +215,12 @@ def add_seller_payment(request, pk):
             else:
                 if invoice.type == "Purchase":
                     aip += (invoice.total - invoice.discount)
-
-                total_invoices -= (invoice.total - invoice.discount)
+                    total_invoices -= (invoice.total - invoice.discount)
+                if invoice.type == 'Return':
+                    if invoice.old_type == 'Sale':
+                        total_invoices -= (invoice.total - invoice.discount)
+                    else:
+                        total_invoices += (invoice.total - invoice.discount)
         total_payments = 0
         for payment in payments:
             if payment.operation == "Give":
@@ -727,6 +731,7 @@ def return_invoice(request, pk):
         wo = Worker.objects.get(pk=data["worker"])
 
         invoice.type = "Return"
+        invoice.old_type = old_type
         invoice.seller = se
         invoice.worker = wo
         invoice.total = 0

@@ -9,12 +9,12 @@
             {% for invoice in invoices %}
                 {% for product in invoice.invoiceproduct_set.all %}
                     <tr class="inv{{ invoice.id }}">
-                        <td>{{ product.product.id }}</td>
-                        <td width="250px">{{ product.product.name }}</td>
-                        <td>{{ product.quantity }}</td>
-                        <td>{{ product.extra_quantity }}</td>
-                        <td>{{ product.piece_price }}</td>
-                        <td>{{ product.total }}</td>
+                        <td class='ss'>{{ product.product.id }}</td>
+                        <td width="250px" class='ss'>{{ product.product.name }}</td>
+                        <td class='ss'>{{ product.quantity }}</td>
+                        <td class='ss'>{{ product.extra_quantity }}</td>
+                        <td class='ss'>{{ product.piece_price }}</td>
+                        <td class='ss'>{{ product.total }}</td>
                     </tr>
                 {% endfor %}
             {% endfor %}
@@ -81,7 +81,11 @@
                         {% for invoice in invoices %}
                             <tr class="sortable" onclick="clicked({{ invoice.id }})" id="{{ invoice.id }}">
                                 <td><a href="{% url 'invoice.view' invoice.pk %}">#{{ invoice.pk }}</a></td>
-                                <td style="width: 250px">Invoice({{ invoice.type }})</td>
+                                <td style="width: 250px">Invoice({{ invoice.type }})
+                                    {% if invoice.type == 'Return' %}
+                                        [{{ invoice.old_type }}]
+                                    {% endif %}
+                                </td>
                                 <td>{{ invoice.total }}{{ invoice.currency.name }}</td>
                                 <td>---</td>
                                 <td>{{ invoice.discount }}{{ invoice.currency.name }}</td>
@@ -201,9 +205,9 @@
 
         function clicked(el) {
             if ($(".invt" + el).length == 0) {
-                let html = "<tr class='invt" + el + "' style='background: #3cbc8d'> <td>#</td> <td>Name</td><td>Quantity</td><td>Extra Quantity</td><td>Piece price</td><td>Total</td></tr>"
+                let html = "<tr class='invt" + el + "' style='background: #3cbc8d'> <td class='ss'>#</td> <td class='ss'>Name</td><td class='ss'>Quantity</td><td class='ss'>Extra Quantity</td><td class='ss'>Piece price</td><td class='ss'>Total</td></tr>"
                 $(".inv" + el).each(function () {
-                    html += "<tr style='background: #3cbc8d' class='invt" + el + "'>" + $(this).html() + "</tr>"
+                    html += "<tr style='background: #3cbc8d' class='ss invt" + el + "'>" + $(this).html() + "</tr>"
                 })
                 $(event.target).parent().after(html)
             } else {
@@ -272,13 +276,24 @@
                 for (let i = 0; i < data.length; i++) {
                     let invoice = data[i]
                     let type = invoice.fields.type
+                    let old_type = invoice.fields.old_type
                     let total = parseFloat(invoice.fields.total)
                     let discount = parseFloat(invoice.fields.discount)
                     let nowTotal = parseFloat($("#total").text())
+                    console.log(type)
                     if (type === "Purchase") {
                         nowTotal -= total
-                    } else {
+                    }
+                    if (type === "Sale") {
                         nowTotal += total
+                    }
+                    if (type === "Return") {
+                        if (old_type === 'Sale') {
+                            nowTotal -= total
+                        }
+                        if (old_type === 'Purchase') {
+                            nowTotal += total
+                        }
                     }
                     nowTotal -= discount
                     $("#total").text(nowTotal)
@@ -361,6 +376,9 @@
 
         .tmp {
             display: none;
+        }
+        .ss{
+            background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAAAkCAYAAAA5DDySAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABYSURBVGhD7dAxAQAhFIDQ7+Wyoo3sdi60gLews/Y9/4h9VKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVGrmASINAsw98tLUAAAAAElFTkSuQmCC");
         }
     </style>
 {% endblock %}
