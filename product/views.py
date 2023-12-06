@@ -503,7 +503,7 @@ def all_products(request):
     else:
         products = Product.objects.all()
         page = request.GET.get('page', 1)
-        paginator = Paginator(products, 100)
+        paginator = Paginator(products, 20)
         try:
             products = paginator.page(page)
         except PageNotAnInteger:
@@ -663,6 +663,14 @@ def view_invoice_last(request):
 @login_required(login_url=LOGIN_URL)
 def all_invoices(request):
     invoices = Invoice.objects.all().order_by("-pk")
+    page = request.GET.get('page', 1)
+    paginator = Paginator(invoices, 20)
+    try:
+        invoices = paginator.page(page)
+    except PageNotAnInteger:
+        invoices = paginator.page(1)
+    except EmptyPage:
+        invoices = paginator.page(paginator.num_pages)
     return render(request, "invoice/all.html", {"invoices": invoices})
 
 
