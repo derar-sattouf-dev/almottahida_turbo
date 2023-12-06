@@ -69,10 +69,6 @@ WSGI_APPLICATION = 'turbo.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    #     'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
     'default': {
         'ENGINE': 'mysql.connector.django',
         'NAME': os.getenv('DATABASE_NAME'),
@@ -136,7 +132,7 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
-ALLOWED_HOSTS = ["almottahida.org", "127.0.0.1", "accounting.almottahida.org", "sy.accounting.almottahida.org","hn.almottahida.org","test.almottahida.org"]
+ALLOWED_HOSTS = [os.getenv('APP_HOST')]
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
