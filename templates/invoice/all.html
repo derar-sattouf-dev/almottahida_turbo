@@ -83,15 +83,21 @@
             {% else %}
                 <li class="disabled page-item"><a class="page-link">&laquo;</a></li>
             {% endif %}
-            {% for i in invoices.paginator.page_range %}
-                {% if invoices.number == i %}
-                    <li class="active page-item"><a class="page-link">{{ i }} <span
-                            class="sr-only">(current)</span></a>
-                    </li>
-                {% else %}
-                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-                {% endif %}
-            {% endfor %}
+{#            {% for i in invoices.paginator.page_range %}#}
+{#                {% if invoices.number == i %}#}
+{#                    <li class="active page-item"><a class="page-link">{{ i }} <span#}
+{#                            class="sr-only">(current)</span></a>#}
+{#                    </li>#}
+{#                {% else %}#}
+{#                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>#}
+{#                {% endif %}#}
+{#            {% endfor %}#}
+
+         {% for l in  Items.paginator.page_range %}
+        {% if forloop.counter < 5 %}
+            <li><a href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>
+        {% endif %}
+      {% endfor %}
             {% if invoices.has_next %}
                 <li class="page-item"><a class="page-link"
                                          href="?page={{ invoices.next_page_number }}">&raquo;</a>
