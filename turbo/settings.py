@@ -1,22 +1,12 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-@a)iglg()m#tg%iob)zjuk5i$$x(a+f&*$a%89-!jas_w$z--#'
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-# Application definition
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -29,9 +19,7 @@ INSTALLED_APPS = [
     'users',
     "corsheaders",
     'home'
-
 ]
-
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
@@ -80,58 +68,8 @@ DATABASES = {
             'autocommit': True,
         },
     }
-    # hn
-    # 'default': {
-    #     'ENGINE': 'mysql.connector.django',
-    #     'NAME': 'almomjgn_accounting_database_3',
-    #     'USER': 'almomjgn_accounting_user',
-    #     'PASSWORD': 'TITNDPildvm7050@!',
-    #     'HOST': 'localhost',
-    #     'PORT': '3306',
-    #     'OPTIONS': {
-    #         'autocommit': True,
-    #     },
-    # }
-    # This is master
-    # 'default': {
-    #     'ENGINE': 'mysql.connector.django',
-    #     'NAME': 'almomjgn_accounting_database',
-    #     'USER': 'almomjgn_accounting_user',
-    #     'PASSWORD': 'TITNDPildvm7050@!',
-    #     'HOST': 'localhost',
-    #     'PORT': '3306',
-    #     'OPTIONS': {
-    #         'autocommit': True,
-    #     },
-    # }
-    # Test
-    # 'default': {
-    #     'ENGINE': 'mysql.connector.django',
-    #     'NAME': 'almomjgn_test',
-    #     'USER': 'almomjgn_accounting_user',
-    #     'PASSWORD': 'TITNDPildvm7050@!',
-    #     'HOST': 'localhost',
-    #     'PORT': '3306',
-    #     'OPTIONS': {
-    #         'autocommit': True,
-    #     },
-    # }
-    # THis is syrian
-    # 'default': {
-    #     'ENGINE': 'mysql.connector.django',
-    #     'NAME': 'almomjgn_accounting_database_2',
-    #     'USER': 'almomjgn_accounting_user',
-    #     'PASSWORD': 'TITNDPildvm7050@!',
-    #     'HOST': 'localhost',
-    #     'PORT': '3306',
-    #     'OPTIONS': {
-    #         'autocommit': True,
-    #     },
-    # }
 }
 
-# Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 ALLOWED_HOSTS = [os.getenv('APP_HOST')]
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -157,6 +95,6 @@ STATIC_URL = "/static/"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),)
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')  # 'data' is my media folder
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
 CORS_ALLOW_ALL_ORIGINS = True
