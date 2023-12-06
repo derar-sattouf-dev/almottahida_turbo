@@ -1,8 +1,14 @@
-import imp
+# import imp
+# import os
+# import sys
+#
+# sys.path.insert(0, os.path.dirname(__file__))
+#
+# wsgi = imp.load_source('wsgi', 'turbo/wsgi.py')
+# application = wsgi.application
+
+
 import os
 import sys
-
-sys.path.insert(0, os.path.dirname(__file__))
-
-wsgi = imp.load_source('wsgi', 'turbo/wsgi.py')
+from turbo import wsgi
 application = wsgi.application
