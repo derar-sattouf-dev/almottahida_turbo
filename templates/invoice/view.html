@@ -90,9 +90,9 @@
             {{ qr|safe }}
         </div>
     </div>
-    <div>
-    <p>Total : {{ invoice.total }}{{ invoice.currency.name }}</p>
-    <p>VAT:</p>
-    <p>TOTAL TTC:</p>
+    <div class="font-weight-bold mt-6">
+        <p>Total : {{ invoice.total }}{{ invoice.currency.name }}</p>
+        <p>VAT:</p>
+        <p>TOTAL TTC:</p>
     </div>
 {% endblock %}
