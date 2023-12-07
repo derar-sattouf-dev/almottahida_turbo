@@ -89,10 +89,11 @@
         <div style="width:60px;height: 60px">
             {{ qr|safe }}
         </div>
+        <div class="font-weight-bold mt-6">
+            <p>Total : {{ invoice.total }}{{ invoice.currency.name }}</p>
+            <p>VAT:</p>
+            <p>TOTAL TTC:</p>
+        </div>
     </div>
-    <div class="font-weight-bold mt-6">
-        <p>Total : {{ invoice.total }}{{ invoice.currency.name }}</p>
-        <p>VAT:</p>
-        <p>TOTAL TTC:</p>
-    </div>
+
 {% endblock %}
