@@ -20,6 +20,7 @@
                 </div>
             </div>
             <h4 class="text-center" style="margin-bottom:10px">Invoice No. {{ invoice.pk }}</h4>
+            <h5 class="text-center" style="margin-bottom:10px">VAT:3730963/601</h5>
 
             <table class="table table-bordered" style="table-layout:fixed;width:100%;">
                 <thead>
@@ -88,5 +89,10 @@
         <div style="width:60px;height: 60px">
             {{ qr|safe }}
         </div>
+    </div>
+    <div>
+    <p>Total : {{ invoice.total }}{{ invoice.currency.name }}</p>
+    <p>VAT:</p>
+    <p>TOTAL TTC:</p>
     </div>
 {% endblock %}
