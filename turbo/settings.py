@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-@a)iglg()m#tg%iob)zjuk5i$$x(a+f&*$a%89-!jas_w$z--#'
-DEBUG = True
+DEBUG = False
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 INSTALLED_APPS = [
     'django.contrib.admin',

@@ -235,7 +235,7 @@
                 headers: {"X-CSRFToken": '{{csrf_token}}'},
                 method: "POST",
                 data: data,
-                url: "https://sy.accounting.almottahida.org{% url 'seller.remote_payments' %}"
+                url: "https://sy.ac.almottahida.org{% url 'seller.remote_payments' %}"
             }).done(function (data) {
                 data = JSON.parse(data)
                 console.log(data)
