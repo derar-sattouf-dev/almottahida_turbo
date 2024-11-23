@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-    <form action="{% url 'all_exports' %}" method="post">
-    {% csrf_token %}
+    <form id="exportForm" action="{% url 'all_exports' %}" method="post">
+        {% csrf_token %}
         <div class="row ">
             <div class="col-2">
                 <div class="form-group">
@@ -19,11 +19,11 @@
             </div>
             <div class="col-2">
                 <label for="model">Model</label>
-                <select required name="model" id="model" class="form-control">
-                    
+                <select required name="model" id="model" class="form-control" onchange="toggleDateRequired()">
                     <option value="1">Invoices</option>
                     <option value="2">Payments</option>
                     <option value="3">Daily Box</option>
+                    <option value="4">Products</option>
                 </select>
             </div>
             <div class="col-4 d-print-none" style="margin-top: 30px">
@@ -31,4 +31,19 @@
             </div>
         </div>
     </form>
+
+    <script>
+        function toggleDateRequired() {
+            const modelSelect = document.getElementById('model');
+            const fromDate = document.getElementById('from');
+            const toDate = document.getElementById('to');
+            if (modelSelect.value === '4') { // Products
+                fromDate.removeAttribute('required');
+                toDate.removeAttribute('required');
+            } else {
+                fromDate.setAttribute('required', 'required');
+                toDate.setAttribute('required', 'required');
+            }
+        }
+    </script>
 {% endblock %}

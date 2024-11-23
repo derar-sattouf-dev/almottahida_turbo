@@ -40,8 +40,8 @@
             </div>
         </div>
         <div id="view">
-            <div>
-                <form action="{% url 'seller.add_payment' seller.pk %}" method="get">
+            <div class="row">
+                <form class="col-9" action="{% url 'seller.add_payment' seller.pk %}" method="get">
                     <div class="row ">
                         <div class="col-4">
                             <div class="form-group">
@@ -61,6 +61,15 @@
                             <button class="btn btn-primary">Get History</button>
                         </div>
                     </div>
+                </form>
+
+                <form class="col-3" id="exportForm" action="{% url 'all_exports' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="model" value="5">
+                    <input type="hidden" name="seller_id" value="{{ seller.pk }}">
+                    <input type="hidden" name="from" value="{{ request.GET.from }}">
+                    <input type="hidden" name="to" value="{{ request.GET.to }}">
+                    <button type="submit" class="btn btn-secondary text-white mt-4">Export Data</button>
                 </form>
             </div>
             <div class="card">
@@ -377,7 +386,8 @@
         .tmp {
             display: none;
         }
-        .ss{
+
+        .ss {
             background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAAAkCAYAAAA5DDySAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABYSURBVGhD7dAxAQAhFIDQ7+Wyoo3sdi60gLews/Y9/4h9VKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVKsBVGrmASINAsw98tLUAAAAAElFTkSuQmCC");
         }
     </style>

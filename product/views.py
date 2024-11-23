@@ -1,5 +1,7 @@
 import csv
 import datetime
+from datetime import datetime, date
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import PageNotAnInteger, Paginator, EmptyPage
@@ -141,7 +143,10 @@ def add_seller_payment(request, pk):
     if request.GET.get("from") and request.GET.get("to"):
         seller = Seller.objects.get(pk=pk)
         _from = request.GET.get("from")
+        _from = datetime.strptime(_from, '%Y-%m-%d').date()
+
         _to = request.GET.get("to")
+        _to = datetime.strptime(_to, '%Y-%m-%d').date()
         #
         apt = 0
         apg = 0
@@ -151,7 +156,6 @@ def add_seller_payment(request, pk):
         #
         invoices = Invoice.objects.filter(seller_id=pk, date_added__range=(_from, _to))
         payments = InvoicePayment.objects.filter(seller_id=pk, add_date__range=(_from, _to))
-
         discounts = SellerDiscount.objects.filter(seller=seller)
         total_invoices = 0
         total_payments = 0
@@ -180,9 +184,9 @@ def add_seller_payment(request, pk):
             total_discounts += discount.amount
 
         invoices_before_from = Invoice.objects.filter(seller_id=pk,
-                                                      date_added__range=(datetime.date(2000, 2, 2), _from))
+                                                      date_added__range=(date(2000, 2, 2), _from))
         payments_before_from = InvoicePayment.objects.filter(seller_id=pk,
-                                                             add_date__range=(datetime.date(2000, 2, 2), _from))
+                                                             add_date__range=(date(2000, 2, 2), _from))
         total_old_invoices = 0
         total_old_payments = 0
         for invoice in invoices_before_from:
@@ -1010,5 +1014,72 @@ def all_exports(request):
             for op in operations:
                 writer.writerow([getattr(op, field, '') for field in field_names])
             return response
+        if model == "4":
+            products = Product.objects.all()
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="products.csv"'
+            writer = csv.writer(response)
+            field_names = [field.name for field in Product._meta.fields]
+            writer.writerow(field_names)
+            for op in products:
+                writer.writerow([getattr(op, field, '') for field in field_names])
+            return response
 
+        if model == "5":
+            pk = request.POST.get("seller_id")
+            invoices = Invoice.objects.filter(seller_id=pk, date_added__range=(from_date, to_date))
+            payments = InvoicePayment.objects.filter(seller_id=pk, add_date__range=(from_date, to_date))
+            discounts = SellerDiscount.objects.filter(seller_id=pk)
+
+            # Combine all records into a single list with a common date field
+            records = []
+            for invoice in invoices:
+                records.append({
+                    'id': invoice.pk,
+                    'type': 'invoice ' + invoice.type,
+                    'total': format(invoice.total, ".2f"),
+                    'rate': '-',
+                    'discount': format(invoice.discount, ".2f"),
+                    'date': invoice.date_added
+                })
+            for payment in payments:
+                records.append({
+                    'id': payment.pk,
+                    'type': 'payment ' + payment.operation,
+                    'total': format(payment.amount, ".2f"),
+                    'rate': payment.rate,
+                    'discount': '-',
+                    'date': payment.add_date
+                })
+            for discount in discounts:
+                records.append({
+                    'id': discount.pk,
+                    'type': 'Discount',
+                    'total': format(discount.amount, ".2f"),
+                    'rate': '1',
+                    'discount': '-',
+                    'date': discount.add_date
+                })
+
+            # Sort the combined list by date
+            records.sort(key=lambda x: x['date'])
+
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="seller.csv"'
+            writer = csv.writer(response)
+            field_names = ['ID', 'TYPE', 'TOTAL', 'RATE', 'DISCOUNT', 'DATE']
+            writer.writerow(field_names)
+
+            for record in records:
+                record['date'] = format_date(record['date'])
+                writer.writerow(
+                    [record['id'], record['type'], record['total'], record['rate'], record['discount'], record['date']])
+
+            return response
     return render(request, "exports.html")
+
+
+def format_date(date):
+    date = str(date)
+    dt = datetime.fromisoformat(date)
+    return dt.strftime("%Y/%m/%d %I:%M")
