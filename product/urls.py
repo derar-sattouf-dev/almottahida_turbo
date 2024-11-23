@@ -40,4 +40,5 @@ urlpatterns = [
     path("rawad/", views.rawad, name='product.rawad'),
     path("show/", views.show, name='product.show'),
     path("reports/", views.all_reports, name='reports.all'),
+    path("exports/", views.all_exports, name='all_exports'),
 ]

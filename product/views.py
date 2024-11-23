@@ -1,3 +1,4 @@
+import csv
 import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -16,6 +17,7 @@ from product.forms import *
 from product.models import *
 from turbo.settings import LOGIN_URL
 from django.core import serializers
+from django.forms import model_to_dict
 
 
 # Categories
@@ -966,3 +968,47 @@ def product_report(request, pk):
         "bproduct": product,
         "pi": pi,
     })
+
+
+@login_required(login_url=LOGIN_URL)
+def all_exports(request):
+    if request.method == 'POST':
+        from_date = request.POST.get('from')
+        to_date = request.POST.get('to')
+        model = request.POST.get('model')
+        if model == "1":
+            invoices = Invoice.objects.filter(date_added__range=(from_date, to_date))
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="invoices.csv"'
+            writer = csv.writer(response)
+            field_names = [field.name for field in Invoice._meta.fields]
+            if 'earn' in field_names:
+                field_names.remove('earn')
+                field_names.remove('old_type')
+
+            writer.writerow(field_names)
+            for invoice in invoices:
+                writer.writerow([getattr(invoice, field, '') for field in field_names])
+            return response
+        if model == "2":
+            payments = InvoicePayment.objects.filter(add_date__range=(from_date, to_date))
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="payments.csv"'
+            writer = csv.writer(response)
+            field_names = [field.name for field in InvoicePayment._meta.fields]
+            writer.writerow(field_names)
+            for payment in payments:
+                writer.writerow([getattr(payment, field, '') for field in field_names])
+            return response
+        if model == "3":
+            operations = DailyBoxOperation.objects.filter(add_date__range=(from_date, to_date))
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="box.csv"'
+            writer = csv.writer(response)
+            field_names = [field.name for field in DailyBoxOperation._meta.fields]
+            writer.writerow(field_names)
+            for op in operations:
+                writer.writerow([getattr(op, field, '') for field in field_names])
+            return response
+
+    return render(request, "exports.html")
