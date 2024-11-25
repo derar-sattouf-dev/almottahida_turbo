@@ -1,6 +1,6 @@
 import csv
 import datetime
-from datetime import datetime, date
+from datetime import datetime, date, time
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -270,8 +270,8 @@ def daily_box(request):
         form.save()
 
     if request.GET.get("from") is None:
-        today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
-        today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+        today_min = datetime.combine(date.today(), time.min)
+        today_max = datetime.combine(date.today(), time.max)
         ops = DailyBoxOperation.objects.filter(add_date__range=(today_min, today_max)).order_by("-pk")
     else:
         _from = request.GET.get("from")
@@ -1027,8 +1027,13 @@ def all_exports(request):
 
         if model == "5":
             pk = request.POST.get("seller_id")
-            invoices = Invoice.objects.filter(seller_id=pk, date_added__range=(from_date, to_date))
-            payments = InvoicePayment.objects.filter(seller_id=pk, add_date__range=(from_date, to_date))
+
+            if from_date == "" or to_date == "":
+                invoices = Invoice.objects.all()
+                payments = InvoicePayment.objects.all()
+            else:
+                invoices = Invoice.objects.filter(seller_id=pk, date_added__range=(from_date, to_date))
+                payments = InvoicePayment.objects.filter(seller_id=pk, add_date__range=(from_date, to_date))
             discounts = SellerDiscount.objects.filter(seller_id=pk)
 
             # Combine all records into a single list with a common date field
