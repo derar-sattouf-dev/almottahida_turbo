@@ -1,8 +1,0 @@
-deployment:
-  tasks:
-    - export DEPLOYPATH=$(env DEPLOYPATH)
-    - source $DEPLOYPATH/3.9/bin/activate && cd $DEPLOYPATH
-    - git pull origin master
-    - pip install -r r.txt
-    - python manage.py migrate
-    - touch tmp/restart.txt

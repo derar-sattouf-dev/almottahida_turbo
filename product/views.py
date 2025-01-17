@@ -1,6 +1,8 @@
 import csv
 import datetime
 from datetime import datetime, date, time
+import os
+from dotenv import load_dotenv
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -242,6 +244,7 @@ def add_seller_payment(request, pk):
             total_discounts += discount.amount
         total = total_invoices - total_payments + seller.old_account - total_discounts
         total = format(total, ".2f")
+    load_dotenv()
 
     return render(request, "seller/add_payment.html",
                   {"form": form, "invoices": invoices, "payments": payments, "discounts": discounts, "seller": seller,
@@ -250,6 +253,7 @@ def add_seller_payment(request, pk):
                    "apg": apg,
                    "aip": aip,
                    "ais": ais,
+                   "remote_url":os.getenv("REMOTE_URL")
                    })
 
 
